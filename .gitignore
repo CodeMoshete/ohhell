@@ -6,6 +6,7 @@
 Assets/AssetStoreTools*
 guestbook_data/
 node_modules/
+gamestates/
 
 # Visual Studio 2015 cache directory
 /.vs/
