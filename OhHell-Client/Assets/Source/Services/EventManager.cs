@@ -2,7 +2,7 @@
 
 public enum EventId
 {
-    JoinGamePressed
+    RefreshLobby
 }
 
 public delegate bool EventCallback(object cookie);

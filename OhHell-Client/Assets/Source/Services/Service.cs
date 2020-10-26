@@ -28,6 +28,19 @@
         }
     }
 
+    private static WebRequestService webRequests;
+    public static WebRequestService WebRequests
+    {
+        get
+        {
+            if (webRequests == null)
+            {
+                webRequests = new WebRequestService();
+            }
+            return webRequests;
+        }
+    }
+
     // Manually set services
     public static UpdateManager UpdateManager
     {

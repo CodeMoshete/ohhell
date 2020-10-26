@@ -1,0 +1,14 @@
+{
+  "GameName": "Babson's Throwdown",
+  "Players": [
+    {
+      "PlayerName": "Ben",
+      "IsHost": true
+    },
+    {
+      "PlayerName": "Chiggers",
+      "IsHost": false
+    }
+  ],
+  "IsLaunched": false
+}

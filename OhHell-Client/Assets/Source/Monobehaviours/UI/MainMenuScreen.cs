@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,27 +12,77 @@ public class MainMenuScreen : MonoBehaviour
     public Button RefreshButton;
 
     private LobbyData currentLobbyData;
-    private Action<string, string> onJoinGame;
+    private Action<GameData> onJoinGame;
+    private List<GameListItem> activeGamesList;
 
-    public void Initialize(LobbyData lobbyData, Action<string, string> onJoinGamePressed)
+    public void Initialize(LobbyData lobbyData, Action<GameData> onJoinGamePressed)
     {
-        currentLobbyData = lobbyData;
         onJoinGame = onJoinGamePressed;
+        activeGamesList = new List<GameListItem>();
 
+        RefreshLobbyContent(lobbyData);
+
+        NewGameButton.onClick.AddListener(OnNewGamePressed);
+        RefreshButton.onClick.AddListener(RefreshLobbyPressed);
+    }
+
+    private void OnNewGamePressed()
+    {
+        if (NewGameNameField.text != string.Empty && NameField.text != string.Empty)
+        {
+            GameData gameData = new GameData();
+            gameData.GameName = NewGameNameField.text;
+            gameData.Players = new List<PlayerData>();
+
+            PlayerData localPlayer = new PlayerData();
+            localPlayer.IsHost = true;
+            localPlayer.PlayerName = NameField.text;
+            gameData.Players.Add(localPlayer);
+
+            onJoinGame(gameData);
+        }
+    }
+
+    private void RefreshLobbyPressed()
+    {
+        Service.EventManager.SendEvent(EventId.RefreshLobby, null);
+    }
+
+    private void OnJoinGame(GameData gameData)
+    {
+        string playerName = NameField.text;
+        if (playerName != string.Empty)
+        {
+            if (!gameData.GetHasPlayer(NameField.text))
+            {
+                PlayerData localPlayer = new PlayerData();
+                localPlayer.IsHost = false;
+                localPlayer.PlayerName = NameField.text;
+                gameData.Players.Add(localPlayer);
+            }
+            onJoinGame(gameData);
+        }
+    }
+
+    public void RefreshLobbyContent(LobbyData lobbyData)
+    {
+        for (int i = 0, numGames = activeGamesList.Count; i < numGames; ++i)
+        {
+            GameObject.Destroy(activeGamesList[i]);
+        }
+        activeGamesList.Clear();
+
+        currentLobbyData = lobbyData;
         for (int i = 0, numGames = currentLobbyData.ActiveGames.Count; i < numGames; ++i)
         {
             GameData gameData = currentLobbyData.ActiveGames[i];
             if (!gameData.IsLaunched || gameData.IsLaunched && gameData.GetHasPlayer(NameField.text))
             {
-                GameObject gameListItemObj = GameObject.Instantiate(Resources.Load<GameObject>("GameListItem"));
+                GameObject gameListItemObj = GameObject.Instantiate(Resources.Load<GameObject>("GameListItem"), GameListPanel);
                 GameListItem listItem = gameListItemObj.GetComponent<GameListItem>();
-                listItem.Initialize(gameData, OnJoinGamePressed);
+                listItem.Initialize(gameData, OnJoinGame);
+                activeGamesList.Add(listItem);
             }
         }
-    }
-
-    private void OnJoinGamePressed(GameData data)
-    {
-        onJoinGame(data.GameName, NameField.text);
     }
 }

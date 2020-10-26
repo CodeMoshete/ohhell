@@ -26,9 +26,9 @@ namespace Game.Controllers
 			sceneFactory.LoadScene<MainMenuState>(OnSceneLoaded, loadParams);
 		}
 
-        public void JoinGame(string gameName, string playerName)
+        public void JoinGame(GameData gameData)
         {
-			OhHellLoadParams loadParams = new OhHellLoadParams(gameName);
+			OhHellLoadParams loadParams = new OhHellLoadParams(gameData);
 			sceneFactory.LoadScene<OhHellGameState>(OnSceneLoaded, loadParams);
         }
 

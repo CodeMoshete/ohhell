@@ -1,15 +1,22 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEngine;
 
 [Serializable]
 public class GameData
 {
+    // Room meta properties.
     public string GameName;
     public List<PlayerData> Players;
     public bool IsLaunched;
+    public bool IsFinished;
+    
+    // Game logic.
+    public string CurrentPlayerTurn;
+    public string CurrentDealer;
+    public int NumDealtCards;
+    public int CurrentRoundNumber;
+    public Card CurrentTrumpCard;
+    public CardDeck CurrentDeck;
 
     public bool GetHasPlayer(string playerName)
     {

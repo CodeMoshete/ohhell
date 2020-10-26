@@ -6,11 +6,11 @@ using UnityEngine;
 
 public struct OhHellLoadParams
 {
-    public string GameName;
+    public GameData GameData;
 
-    public OhHellLoadParams(string gameName)
+    public OhHellLoadParams(GameData gameData)
     {
-        GameName = gameName;
+        GameData = gameData;
     }
 }
 

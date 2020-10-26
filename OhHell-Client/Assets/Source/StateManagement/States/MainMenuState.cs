@@ -4,9 +4,9 @@ using UnityEngine;
 
 public struct MainMenuLoadParams
 {
-    public Action<string, string> OnJoinGame;
+    public Action<GameData> OnJoinGame;
 
-    public MainMenuLoadParams(Action<string, string> onJoinGame)
+    public MainMenuLoadParams(Action<GameData> onJoinGame)
     {
         OnJoinGame = onJoinGame;
     }
@@ -16,32 +16,47 @@ public class MainMenuState : IStateController
 {
     private GameObject mainMenuUi;
     private MainMenuScreen mainMenuScreen;
-    private Action<string, string> onJoinGame;
+    private Action<GameData> onJoinGame;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
         MainMenuLoadParams loadParams = (MainMenuLoadParams)passedParams;
         onJoinGame = loadParams.OnJoinGame;
 
-        // TODO: Get LobbyData from backend.
-        LobbyData lobbyData = new LobbyData();
-        lobbyData.ActiveGames = new System.Collections.Generic.List<GameData>();
-
         Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
         mainMenuUi = GameObject.Instantiate(Resources.Load<GameObject>("MainMenu"), gameUiLayer);
         mainMenuScreen = mainMenuUi.GetComponent<MainMenuScreen>();
-        mainMenuScreen.Initialize(lobbyData, JoinGame);
-        onLoadedCallback();
+
+        Service.WebRequests.GetGamesList((response) =>
+        {
+            Service.EventManager.AddListener(EventId.RefreshLobby, RefreshLobby);
+            LobbyData lobbyData = JsonUtility.FromJson<LobbyData>(response);
+            mainMenuScreen.Initialize(lobbyData, JoinGame);
+            onLoadedCallback();
+        });
     }
 
     public void Start()
     {
-        Debug.Log("Game started!");
+        Debug.Log("Main menu loaded!");
     }
 
-    public void JoinGame(string gameName, string playerName)
+    public void JoinGame(GameData game)
     {
-        onJoinGame(gameName, playerName);
+        Service.WebRequests.SetGameState(game, (response) =>
+        {
+            onJoinGame(game);
+        });
+    }
+
+    private bool RefreshLobby(object cookie)
+    {
+        Service.WebRequests.GetGamesList((response) =>
+        {
+            LobbyData lobbyData = JsonUtility.FromJson<LobbyData>(response);
+            mainMenuScreen.RefreshLobbyContent(lobbyData);
+        });
+        return true;
     }
 
     public void Unload()
