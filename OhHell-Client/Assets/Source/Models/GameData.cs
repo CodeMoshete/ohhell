@@ -29,4 +29,17 @@ public class GameData
         }
         return false;
     }
+
+    public PlayerData GetPlayerByName(string name)
+    {
+        for (int i = 0, count = Players.Count; i < count; ++i)
+        {
+            PlayerData thisData = Players[i];
+            if (thisData.PlayerName == name)
+            {
+                return thisData;
+            }
+        }
+        return null;
+    }
 }

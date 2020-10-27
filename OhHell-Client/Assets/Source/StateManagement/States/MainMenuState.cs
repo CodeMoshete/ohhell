@@ -4,9 +4,9 @@ using UnityEngine;
 
 public struct MainMenuLoadParams
 {
-    public Action<GameData> OnJoinGame;
+    public Action<GameData, string> OnJoinGame;
 
-    public MainMenuLoadParams(Action<GameData> onJoinGame)
+    public MainMenuLoadParams(Action<GameData, string> onJoinGame)
     {
         OnJoinGame = onJoinGame;
     }
@@ -16,7 +16,7 @@ public class MainMenuState : IStateController
 {
     private GameObject mainMenuUi;
     private MainMenuScreen mainMenuScreen;
-    private Action<GameData> onJoinGame;
+    private Action<GameData, string> onJoinGame;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
@@ -41,11 +41,11 @@ public class MainMenuState : IStateController
         Debug.Log("Main menu loaded!");
     }
 
-    public void JoinGame(GameData game)
+    public void JoinGame(GameData game, string localPlayerName)
     {
         Service.WebRequests.SetGameState(game, (response) =>
         {
-            onJoinGame(game);
+            onJoinGame(game, localPlayerName);
         });
     }
 

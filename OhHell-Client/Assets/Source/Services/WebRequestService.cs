@@ -6,18 +6,25 @@ using UnityEngine.Networking;
 public class WebRequestService
 {
     private Dictionary<UnityWebRequest, Action<string>> activeRequests;
+    private Dictionary<UnityWebRequest, Action<string>> newRequests;
     private List<UnityWebRequest> cleanupRequests;
 
     public WebRequestService()
     {
         cleanupRequests = new List<UnityWebRequest>();
         activeRequests = new Dictionary<UnityWebRequest, Action<string>>();
+        newRequests = new Dictionary<UnityWebRequest, Action<string>>();
         Service.UpdateManager.AddObserver(OnUpdate, true);
     }
 
     private void OnUpdate(float dt)
     {
-        
+        foreach (KeyValuePair<UnityWebRequest, Action<string>> pair in newRequests)
+        {
+            activeRequests.Add(pair.Key, pair.Value);
+        }
+        newRequests.Clear();
+
         foreach (KeyValuePair<UnityWebRequest, Action<string>> pair in activeRequests)
         {
             if (pair.Key.isDone)
@@ -49,7 +56,7 @@ public class WebRequestService
     {
         UnityWebRequest gamesListRequest = UnityWebRequest.Get("localhost:8082/game/getGamesList");
         gamesListRequest.SendWebRequest();
-        activeRequests.Add(gamesListRequest, onFinished);
+        newRequests.Add(gamesListRequest, onFinished);
     }
 
     public void GetGameState(GameData game, Action<string> onFinished)
@@ -57,7 +64,7 @@ public class WebRequestService
         string url = string.Format("localhost:8082/game/getGameState?gameName={0}", game.GameName);
         UnityWebRequest gamesListRequest = UnityWebRequest.Get(url);
         gamesListRequest.SendWebRequest();
-        activeRequests.Add(gamesListRequest, onFinished);
+        newRequests.Add(gamesListRequest, onFinished);
     }
 
     public void SetGameState(GameData game, Action<string> onFinished)
@@ -74,6 +81,6 @@ public class WebRequestService
         setStateRequest.SetRequestHeader("User-Agent", "runscope/0.1");
 #endif
         setStateRequest.SendWebRequest();
-        activeRequests.Add(setStateRequest, onFinished);
+        newRequests.Add(setStateRequest, onFinished);
     }
 }

@@ -26,10 +26,17 @@ namespace Game.Controllers
 			sceneFactory.LoadScene<MainMenuState>(OnSceneLoaded, loadParams);
 		}
 
-        public void JoinGame(GameData gameData)
+        public void JoinGame(GameData gameData, string localPlayerName)
         {
-			OhHellLoadParams loadParams = new OhHellLoadParams(gameData);
-			sceneFactory.LoadScene<OhHellGameState>(OnSceneLoaded, loadParams);
+			OhHellLobbyLoadParams loadParams = 
+                new OhHellLobbyLoadParams(gameData, LaunchGame, localPlayerName);
+			sceneFactory.LoadScene<OhHellLobbyState>(OnSceneLoaded, loadParams);
+        }
+
+        public void LaunchGame(GameData gameData, string localPlayerName)
+        {
+            OhHellGameLoadParams loadParams = new OhHellGameLoadParams(gameData, LoadMainMenu);
+            sceneFactory.LoadScene<OhHellGameState>(OnSceneLoaded, loadParams);
         }
 
 		public void OnSceneLoaded()

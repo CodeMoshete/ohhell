@@ -12,10 +12,11 @@ public class MainMenuScreen : MonoBehaviour
     public Button RefreshButton;
 
     private LobbyData currentLobbyData;
-    private Action<GameData> onJoinGame;
+    private Action<GameData, string> onJoinGame;
     private List<GameListItem> activeGamesList;
 
-    public void Initialize(LobbyData lobbyData, Action<GameData> onJoinGamePressed)
+    public void Initialize(
+        LobbyData lobbyData, Action<GameData, string> onJoinGamePressed)
     {
         onJoinGame = onJoinGamePressed;
         activeGamesList = new List<GameListItem>();
@@ -39,7 +40,7 @@ public class MainMenuScreen : MonoBehaviour
             localPlayer.PlayerName = NameField.text;
             gameData.Players.Add(localPlayer);
 
-            onJoinGame(gameData);
+            onJoinGame(gameData, localPlayer.PlayerName);
         }
     }
 
@@ -60,7 +61,7 @@ public class MainMenuScreen : MonoBehaviour
                 localPlayer.PlayerName = NameField.text;
                 gameData.Players.Add(localPlayer);
             }
-            onJoinGame(gameData);
+            onJoinGame(gameData, playerName);
         }
     }
 
