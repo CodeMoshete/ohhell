@@ -23,17 +23,37 @@ public class Card
             return (CardSuit)IntSuit;
         }
     }
-    public uint FaceValue;
+
+    public uint IntValue;
+    public string FaceValue
+    {
+        get
+        {
+            switch (IntValue)
+            {
+                case 0:
+                    return "A";
+                case 11:
+                    return "J";
+                case 12:
+                    return "Q";
+                case 13:
+                    return "K";
+                default:
+                    return (IntValue + 1).ToString();
+            }
+        }
+    }
 
     public Card(CardSuit suit, uint faceValue)
     {
         IntSuit = (uint)suit;
-        FaceValue = faceValue;
+        IntValue = faceValue;
     }
 
     public Card(uint suit, uint faceValue)
     {
         IntSuit = (uint)suit;
-        FaceValue = faceValue;
+        IntValue = faceValue;
     }
 }
