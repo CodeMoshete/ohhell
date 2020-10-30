@@ -11,12 +11,11 @@ public class GameData
     public bool IsFinished;
     
     // Game logic.
-    public string CurrentPlayerTurn;
-    public string CurrentDealer;
+    public int CurrentPlayerTurnIndex;
+    public int CurrentDealerIndex;
     public int NumDealtCards;
     public int CurrentRoundNumber;
     public Card CurrentTrumpCard;
-    public CardDeck CurrentDeck;
 
     public bool GetHasPlayer(string playerName)
     {
@@ -41,5 +40,13 @@ public class GameData
             }
         }
         return null;
+    }
+
+    public int NumCardsToDeal
+    {
+        get
+        {
+            return Math.Abs(CurrentRoundNumber - 7) + 1;
+        }
     }
 }

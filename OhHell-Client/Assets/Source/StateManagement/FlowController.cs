@@ -35,7 +35,8 @@ namespace Game.Controllers
 
         public void LaunchGame(GameData gameData, string localPlayerName)
         {
-            OhHellGameLoadParams loadParams = new OhHellGameLoadParams(gameData, LoadMainMenu);
+            OhHellGameLoadParams loadParams = 
+                new OhHellGameLoadParams(gameData, LoadMainMenu, localPlayerName);
             sceneFactory.LoadScene<OhHellGameState>(OnSceneLoaded, loadParams);
         }
 

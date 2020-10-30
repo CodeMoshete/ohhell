@@ -81,11 +81,7 @@ public class OhHellLobbyState : IStateController
     {
         Service.WebRequests.GetGameState(gameData, (response) =>
         {
-            gameData.IsLaunched = true;
-            Service.WebRequests.SetGameState(gameData, (setResponse) =>
-            {
-                onLaunchGame(gameData, localPlayerName);
-            });
+            onLaunchGame(gameData, localPlayerName);
         });
     }
 
