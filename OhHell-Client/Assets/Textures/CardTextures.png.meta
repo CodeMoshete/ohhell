@@ -26,6 +26,12 @@ TextureImporter:
   - first:
       213: 9099726862538738706
     second: CardTexture
+  - first:
+      213: 6054914821175819654
+    second: CardBacker
+  - first:
+      213: 3060002319946501927
+    second: CardBack
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -127,11 +133,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 878
+        y: 1902
         width: 112
         height: 146
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -147,12 +153,12 @@ TextureImporter:
       name: HeartSymbol
       rect:
         serializedVersion: 2
-        x: 124
-        y: 880
+        x: 122
+        y: 1904
         width: 127
         height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -168,12 +174,12 @@ TextureImporter:
       name: ClubsSymbol
       rect:
         serializedVersion: 2
-        x: 129
-        y: 758
+        x: 124
+        y: 1781
         width: 122
         height: 120
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -190,11 +196,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 755
+        y: 1775
         width: 106
         height: 125
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -211,11 +217,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 303
+        y: 1326
         width: 267
         height: 425
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -232,11 +238,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 306
-        y: 147
+        y: 1170
         width: 265
         height: 422
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -252,12 +258,12 @@ TextureImporter:
       name: KingTexture
       rect:
         serializedVersion: 2
-        x: 309
-        y: 603
+        x: 311
+        y: 1627
         width: 251
         height: 421
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -273,12 +279,12 @@ TextureImporter:
       name: CardTexture
       rect:
         serializedVersion: 2
-        x: 587
-        y: 372
+        x: 598
+        y: 1393
         width: 436
         height: 600
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -286,6 +292,48 @@ TextureImporter:
       bones: []
       spriteID: 21c83ba7e59b84e70800000000000000
       internalID: 9099726862538738706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CardBacker
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 832
+        width: 381
+        height: 550
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68dbe6513f0670450800000000000000
+      internalID: 6054914821175819654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CardBack
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 830
+        width: 382
+        height: 553
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 72f484cb5ef477a20800000000000000
+      internalID: 3060002319946501927
       vertices: []
       indices: 
       edges: []

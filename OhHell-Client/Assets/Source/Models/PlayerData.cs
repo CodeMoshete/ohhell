@@ -10,5 +10,7 @@ public class PlayerData
     public List<Card> CurrentHand;
     public int CurrentBid;
     public int CurrentTricks;
+    public List<int> Bids;
+    public List<int> Tricks;
     public int TotalScore;
 }
