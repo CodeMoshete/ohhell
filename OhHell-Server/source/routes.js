@@ -26,6 +26,13 @@ router.route('/getGamesList')
     res.send(gamesList);
   });
 
+router.route('/logGameAction')
+  .post(async (req, res) => {
+    debug(`Setting gamestate!\n${util.inspect(req.body)}`);
+    gameManager.setGameState(req.body);
+    res.sendStatus(200);
+  });
+
 router.route('/')
   .get(async (req, res) => {
     res.send('Game server running!');

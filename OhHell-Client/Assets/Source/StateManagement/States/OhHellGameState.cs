@@ -80,9 +80,26 @@ public class OhHellGameState : IStateController
     {
         Service.WebRequests.GetGameState(gameData, (response) =>
         {
-            gameData = JsonUtility.FromJson<GameData>(response);
+            //gameData = JsonUtility.FromJson<GameData>(response);
             //lobbyScreen.RefreshPlayerList(gameData);
+            GenerateDiffActions(JsonUtility.FromJson<GameData>(response));
         });
+    }
+
+    public void GenerateDiffActions(GameData newGameData)
+    {
+        // Card played
+        int turnDiff = newGameData.CurrentPlayerTurnIndex < gameData.CurrentPlayerTurnIndex ?
+            ((gameData.Players.Count - 1) - gameData.CurrentPlayerTurnIndex) + newGameData.CurrentPlayerTurnIndex :
+            newGameData.CurrentPlayerTurnIndex - gameData.CurrentPlayerTurnIndex;
+
+        for (int i = 0; i < turnDiff; ++i)
+        {
+
+        }
+        // Turn ended
+        // Round ended
+        // Game ended
     }
 
     public void Unload()

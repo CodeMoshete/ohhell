@@ -23,6 +23,45 @@ module.exports.getGameState = function getGameState(gameName) {
   return fs.readFileSync(gameStateFilePath);
 };
 
+module.exports.logGameAction = function logGameAction(action, gameName) {
+  const gameActionName = `gameActions-${gameName}`;
+  const gameActionBasePath = path.join(global.appRoot, 'gamestates');
+  const gameActionFilePath = path.join(gameActionBasePath, gameActionName);
+
+  if (!fs.existsSync(gameActionBasePath)) {
+    fs.mkdirSync(gameActionBasePath, { recursive: true });
+  }
+
+  let actionContent = [];
+  if (fs.existsSync(gameActionFilePath)) {
+    actionContent = JSON.parse(fs.readFileSync(gameActionFilePath));
+  }
+  actionContent.push(action);
+
+  debug(`SET GAME STATE: ${gameActionFilePath}`);
+  fs.writeFileSync(gameActionFilePath, JSON.stringify(actionContent, null, 2));
+};
+
+module.exports.getGameActions = function getGameActions(gameName, startIndex) {
+  const gameActionName = `gameActions-${gameName}`;
+  const gameActionBasePath = path.join(global.appRoot, 'gamestates');
+  const gameActionFilePath = path.join(gameActionBasePath, gameActionName);
+
+  let actionContent = [];
+  if (fs.existsSync(gameActionFilePath)) {
+    actionContent = JSON.parse(fs.readFileSync(gameActionFilePath));
+  }
+
+  const returnContent = [];
+  const numActions = actionContent.length;
+  if (numActions > startIndex + 1) {
+    for (let i = startIndex; i < numActions; i += 1) {
+      returnContent.push(actionContent[i]);
+    }
+  }
+  return JSON.stringify(returnContent);
+};
+
 module.exports.getGamesList = function getGamesList() {
   const allGamesData = [];
   const gameStateBasePath = path.join(global.appRoot, 'gamestates');
