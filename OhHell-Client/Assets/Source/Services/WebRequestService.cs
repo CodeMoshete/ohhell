@@ -83,4 +83,30 @@ public class WebRequestService
         setStateRequest.SendWebRequest();
         newRequests.Add(setStateRequest, onFinished);
     }
+
+    public void SendGameAction(IGameAction gameAction, Action<string> onFinished)
+    {
+        UnityWebRequest setStateRequest = new UnityWebRequest("localhost:8082/game/addGameAction");
+        string messageBody = JsonUtility.ToJson(gameAction);
+        Debug.Log("GAME ACTION BODY: " + messageBody);
+        setStateRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(messageBody));
+        setStateRequest.downloadHandler = new DownloadHandlerBuffer();
+        setStateRequest.method = UnityWebRequest.kHttpVerbPOST;
+        setStateRequest.SetRequestHeader("Content-Type", "application/json");
+#if UNITY_EDITOR
+        setStateRequest.SetRequestHeader("Accept", "*/*");
+        setStateRequest.SetRequestHeader("Accept-Encoding", "gzip, deflate");
+        setStateRequest.SetRequestHeader("User-Agent", "runscope/0.1");
+#endif
+        setStateRequest.SendWebRequest();
+        newRequests.Add(setStateRequest, onFinished);
+    }
+
+    public void GetGameActions(GameData game, int currentActionIndex, Action<string> onFinished)
+    {
+        string url = string.Format("localhost:8082/game/getGameActions?gameName={0}&actionIndex={1}", game.GameName, currentActionIndex);
+        UnityWebRequest gamesListRequest = UnityWebRequest.Get(url);
+        gamesListRequest.SendWebRequest();
+        newRequests.Add(gamesListRequest, onFinished);
+    }
 }

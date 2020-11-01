@@ -26,11 +26,18 @@ router.route('/getGamesList')
     res.send(gamesList);
   });
 
-router.route('/logGameAction')
+router.route('/addGameAction')
   .post(async (req, res) => {
-    debug(`Setting gamestate!\n${util.inspect(req.body)}`);
+    debug(`Setting game action!\n${util.inspect(req.body)}`);
     gameManager.setGameState(req.body);
     res.sendStatus(200);
+  });
+
+router.route('/getGameActions')
+  .get(async (req, res) => {
+    debug('Getting game state!');
+    const gamesList = gameManager.getGameActions(req.query.gameName, req.query.actionIndex);
+    res.send(gamesList);
   });
 
 router.route('/')

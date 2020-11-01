@@ -1,5 +1,8 @@
-﻿public interface IGameAction
+﻿using System;
+
+public interface IGameAction
 {
     string ActionType { get; }
-    void ExecuteAction();
+    void ExecuteAction(Action onDone);
+    void PopulateFromJson(string json);
 }

@@ -21,10 +21,14 @@ public struct OhHellGameLoadParams
 
 public class OhHellGameState : IStateController
 {
-    private const float GAME_UPDATE_TIME = 5f;
+    private const float GAME_UPDATE_TIME = 3f;
     private GameObject gameUi;
+    private GameScreen gameScreen;
     private GameData gameData;
     private PlayerData localPlayer;
+
+    private int actionIndex;
+    private Queue<IGameAction> currentPendingActions;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
@@ -39,10 +43,9 @@ public class OhHellGameState : IStateController
             gameData.IsLaunched = true;
         }
 
-        //Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
-        //gameUi = GameObject.Instantiate(Resources.Load<GameObject>("GameLobbyScreen"), gameUiLayer);
-        //lobbyScreen = gameUi.GetComponent<GameLobbyScreen>();
-        //lobbyScreen.Initialize(gameData);
+        Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
+        gameUi = GameObject.Instantiate(Resources.Load<GameObject>("GameScreen"), gameUiLayer);
+        gameScreen = gameUi.GetComponent<GameScreen>();
 
         onLoadedCallback();
     }
@@ -68,40 +71,61 @@ public class OhHellGameState : IStateController
 
         gameData.CurrentTrumpCard = newDeck.DealCard();
         dealerIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
+        gameData.CurrentDealerIndex = dealerIndex;
+        gameData.CurrentPlayerTurnIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
+        Service.WebRequests.SetGameState(gameData, (response) =>
+        {
+            TableRoundBeginAction beginRoundAction = new TableRoundBeginAction();
+            beginRoundAction.IsRoundBegun = true;
+            Service.WebRequests.SendGameAction(beginRoundAction, (beginResponse) => 
+            {
+                Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
+            });
+        });
     }
 
     public void Start()
     {
-        Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameStatus, null);
+        currentPendingActions = new Queue<IGameAction>();
         Debug.Log("Game started!");
     }
 
-    private void GetGameStatus(object cookie)
+    private void GetGameUpdates(object cookie)
     {
-        Service.WebRequests.GetGameState(gameData, (response) =>
-        {
-            //gameData = JsonUtility.FromJson<GameData>(response);
-            //lobbyScreen.RefreshPlayerList(gameData);
-            GenerateDiffActions(JsonUtility.FromJson<GameData>(response));
-        });
+        Service.WebRequests.GetGameActions(gameData, actionIndex, ApplyNewGameActions);
     }
 
-
-
-    public void GenerateDiffActions(GameData newGameData)
+    private void ApplyNewGameActions(string actionsResponse)
     {
-        // Card played
-        int turnDiff = newGameData.CurrentPlayerTurnIndex < gameData.CurrentPlayerTurnIndex ?
-            ((gameData.Players.Count - 1) - gameData.CurrentPlayerTurnIndex) + newGameData.CurrentPlayerTurnIndex :
-            newGameData.CurrentPlayerTurnIndex - gameData.CurrentPlayerTurnIndex;
-
-        for (int i = 0; i < turnDiff; ++i)
+        GameActionRecord actions = JsonUtility.FromJson<GameActionRecord>(actionsResponse);
+        List<IGameAction> newActions = actions.GetGameActionsFromRecord();
+        bool areActionsRunning = currentPendingActions.Count > 0;
+        bool keepListening = true;
+        for (int i = 0, count = newActions.Count; i < count; ++i)
         {
-
+            currentPendingActions.Enqueue(newActions[i]);
+            keepListening = newActions[i].ActionType != "TableGameEndAction";
         }
-        // Turn ended
-        // Round ended
-        // Game ended
+
+        if (!areActionsRunning)
+        {
+            InvokeNextAction();
+        }
+
+        if (keepListening)
+        {
+            Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
+        }
+    }
+
+    private void InvokeNextAction()
+    {
+        if (currentPendingActions.Count > 0)
+        {
+            IGameAction nextAction = currentPendingActions.Dequeue();
+            nextAction.ExecuteAction(InvokeNextAction);
+            actionIndex++;
+        }
     }
 
     public void Unload()

@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 [Serializable]
 public class TableRoundEndAction : IGameAction
@@ -13,8 +14,14 @@ public class TableRoundEndAction : IGameAction
 
     public bool IsRoundEnded;
 
-    public void ExecuteAction()
+    public void ExecuteAction(Action onDone)
     {
 
+    }
+
+    public void PopulateFromJson(string json)
+    {
+        TableRoundEndAction parsedAction = JsonUtility.FromJson<TableRoundEndAction>(json);
+        IsRoundEnded = parsedAction.IsRoundEnded;
     }
 }

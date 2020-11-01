@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 [Serializable]
 public class PlayerTurnAction : IGameAction
@@ -16,8 +17,15 @@ public class PlayerTurnAction : IGameAction
 
     public bool IsRoundEnded;
 
-    public void ExecuteAction()
+    public void ExecuteAction(Action onDone)
     {
 
+    }
+
+    public void PopulateFromJson(string json)
+    {
+        PlayerTurnAction parsedAction = JsonUtility.FromJson<PlayerTurnAction>(json);
+        PlayerIndex = parsedAction.PlayerIndex;
+        CardPlayed = parsedAction.CardPlayed;
     }
 }
