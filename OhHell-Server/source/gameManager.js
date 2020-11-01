@@ -52,14 +52,15 @@ module.exports.getGameActions = function getGameActions(gameName, startIndex) {
     actionContent = JSON.parse(fs.readFileSync(gameActionFilePath));
   }
 
-  const returnContent = [];
+  const actions = [];
   const numActions = actionContent.length;
   if (numActions > startIndex + 1) {
     for (let i = startIndex; i < numActions; i += 1) {
-      returnContent.push(actionContent[i]);
+      actions.push(actionContent[i]);
     }
   }
-  return JSON.stringify(returnContent);
+
+  return JSON.stringify(actions);
 };
 
 module.exports.getGamesList = function getGamesList() {

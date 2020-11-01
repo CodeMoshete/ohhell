@@ -86,6 +86,8 @@ public class OhHellGameState : IStateController
         });
     }
 
+
+
     public void GenerateDiffActions(GameData newGameData)
     {
         // Card played

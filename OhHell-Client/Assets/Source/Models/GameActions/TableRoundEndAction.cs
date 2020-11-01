@@ -1,16 +1,13 @@
 ﻿using System;
 
 [Serializable]
-public class PlayerTurnAction : IGameAction
+public class TableRoundEndAction : IGameAction
 {
-    public int PlayerIndex;
-    public Card CardPlayed;
-
     public string ActionType
     {
         get
         {
-            return "PlayerTurnAction";
+            return "TableRoundEndAction";
         }
     }
 
