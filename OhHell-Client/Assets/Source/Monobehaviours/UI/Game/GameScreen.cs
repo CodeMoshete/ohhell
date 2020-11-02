@@ -101,7 +101,7 @@ public class GameScreen : MonoBehaviour
     {
         for (int i = 0, count = playerList.Count; i < count; ++i)
         {
-            GameObject.Destroy(playerList[i]);
+            GameObject.Destroy(playerList[i].gameObject);
         }
         playerList.Clear();
 
