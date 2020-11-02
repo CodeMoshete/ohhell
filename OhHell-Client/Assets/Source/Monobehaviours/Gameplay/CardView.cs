@@ -55,7 +55,7 @@ public class CardView : MonoBehaviour
         CardData = card;
     }
 
-    public static CardView CreateFromModel(Card card, Transform parent)
+    public static CardView CreateFromModel(Card card, Transform parent, bool isPlayerCard = false)
     {
         Debug.Log("Spawn card: " + card.FaceValue);
         GameObject newCard = GameObject.Instantiate(
@@ -63,6 +63,12 @@ public class CardView : MonoBehaviour
             parent);
         CardView newCardView = newCard.GetComponent<CardView>();
         newCardView.SetCard(card);
+
+        if (isPlayerCard)
+        {
+            newCardView.AddButtonBehavior();
+        }
+
         return newCardView;
     }
 
