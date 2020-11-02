@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 
 public class WebRequestService
 {
+    private const string BASE_ADDRESS = "http://10.0.0.238:8082";
     private Dictionary<UnityWebRequest, Action<string>> activeRequests;
     private Dictionary<UnityWebRequest, Action<string>> newRequests;
     private List<UnityWebRequest> cleanupRequests;
@@ -54,14 +55,14 @@ public class WebRequestService
 
     public void GetGamesList(Action<string> onFinished)
     {
-        UnityWebRequest gamesListRequest = UnityWebRequest.Get("localhost:8082/game/getGamesList");
+        UnityWebRequest gamesListRequest = UnityWebRequest.Get(string.Format("{0}/game/getGamesList", BASE_ADDRESS));
         gamesListRequest.SendWebRequest();
         newRequests.Add(gamesListRequest, onFinished);
     }
 
     public void GetGameState(GameData game, Action<string> onFinished)
     {
-        string url = string.Format("localhost:8082/game/getGameState?gameName={0}", game.GameName);
+        string url = string.Format("{0}/game/getGameState?gameName={1}", BASE_ADDRESS, game.GameName);
         UnityWebRequest gamesListRequest = UnityWebRequest.Get(url);
         gamesListRequest.SendWebRequest();
         newRequests.Add(gamesListRequest, onFinished);
@@ -69,7 +70,7 @@ public class WebRequestService
 
     public void SetGameState(GameData game, Action<string> onFinished)
     {
-        UnityWebRequest setStateRequest = new UnityWebRequest("localhost:8082/game/setGameState");
+        UnityWebRequest setStateRequest = new UnityWebRequest(string.Format("{0}/game/setGameState", BASE_ADDRESS));
         string messageBody = JsonUtility.ToJson(game);
         setStateRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(messageBody));
         setStateRequest.downloadHandler = new DownloadHandlerBuffer();
@@ -86,7 +87,7 @@ public class WebRequestService
 
     public void SendGameAction(GameData gameData, IGameAction gameAction, Action<string> onFinished)
     {
-        UnityWebRequest setStateRequest = new UnityWebRequest("localhost:8082/game/addGameAction");
+        UnityWebRequest setStateRequest = new UnityWebRequest(string.Format("{0}/game/addGameAction", BASE_ADDRESS));
         SetActionRequest requestData = new SetActionRequest(gameAction, gameData.GameName);
         string messageBody = JsonUtility.ToJson(requestData);
         Debug.Log("GAME ACTION BODY: " + messageBody);
@@ -105,7 +106,7 @@ public class WebRequestService
 
     public void GetGameActions(GameData game, int currentActionIndex, Action<string> onFinished)
     {
-        string url = string.Format("localhost:8082/game/getGameActions?gameName={0}&actionIndex={1}", game.GameName, currentActionIndex);
+        string url = string.Format("{0}/game/getGameActions?gameName={1}&actionIndex={2}", BASE_ADDRESS, game.GameName, currentActionIndex);
         UnityWebRequest gamesListRequest = UnityWebRequest.Get(url);
         gamesListRequest.SendWebRequest();
         newRequests.Add(gamesListRequest, onFinished);
