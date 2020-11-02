@@ -30,7 +30,6 @@ public class WebRequestService
         {
             if (pair.Key.isDone)
             {
-                Debug.Log("Request done: " + pair.Key.url);
                 pair.Value(pair.Key.downloadHandler.text);
                 cleanupRequests.Add(pair.Key);
             }

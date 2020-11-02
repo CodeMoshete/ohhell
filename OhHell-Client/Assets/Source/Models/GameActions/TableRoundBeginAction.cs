@@ -16,6 +16,7 @@ public class TableRoundBeginAction : IGameAction
     public void ExecuteAction(Action onDone)
     {
         Service.EventManager.SendEvent(EventId.RoundBegun, null);
+        onDone();
     }
 
     public void PopulateFromJson(string json)

@@ -20,6 +20,7 @@ public class PlayerTurnAction : IGameAction
     public void ExecuteAction(Action onDone)
     {
         Service.EventManager.SendEvent(EventId.CardPlayed, this);
+        onDone();
     }
 
     public void PopulateFromJson(string json)
