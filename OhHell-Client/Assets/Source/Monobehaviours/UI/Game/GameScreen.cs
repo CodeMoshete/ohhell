@@ -68,9 +68,13 @@ public class GameScreen : MonoBehaviour
             GameObject.Destroy(HighCard);
             HighCard = null;
         }
+
         PlayerData turnLeader = gameState.TurnLeader;
-        HighCard = CardView.CreateFromModel(turnLeader.CurrentRoundCard, HighCardContainer);
-        HighCardPlayerName.text = turnLeader.PlayerName;
+        if (turnLeader != null)
+        { 
+            HighCard = CardView.CreateFromModel(turnLeader.CurrentRoundCard, HighCardContainer);
+            HighCardPlayerName.text = turnLeader.PlayerName;
+        }
     }
 
     private void SetTrumpCard(GameData gameState)
