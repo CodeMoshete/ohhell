@@ -169,6 +169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NameField: {fileID: 5866483724982497293}
+  TrickField: {fileID: 4658973937238053263}
 --- !u!1 &5866483724982497295
 GameObject:
   m_ObjectHideFlags: 0
