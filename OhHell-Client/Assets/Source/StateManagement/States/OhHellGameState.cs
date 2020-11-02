@@ -66,7 +66,6 @@ public class OhHellGameState : IStateController
             }
             else
             {
-                Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
                 SyncGameState(() =>
                 {
                     onLoaded();
@@ -78,7 +77,9 @@ public class OhHellGameState : IStateController
     public void Start()
     {
         currentPendingActions = new Queue<IGameAction>();
-        gameScreen.gameObject.SetActive(true);
+        gameUi.SetActive(true);
+        Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
+        gameScreen.SyncGameState(gameData, localPlayer);
         Debug.Log("Game started!");
     }
 
@@ -111,7 +112,6 @@ public class OhHellGameState : IStateController
             beginRoundAction.IsRoundBegun = true;
             Service.WebRequests.SendGameAction(gameData, beginRoundAction, (beginResponse) => 
             {
-                Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
                 onLoaded();
             });
         });
@@ -124,7 +124,6 @@ public class OhHellGameState : IStateController
             gameData = JsonUtility.FromJson<GameData>(response);
             localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
             gameScreen.SyncGameState(gameData, localPlayer);
-            Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
 
             if (onSynced != null)
             {

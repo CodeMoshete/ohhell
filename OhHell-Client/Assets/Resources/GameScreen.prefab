@@ -3668,6 +3668,7 @@ GameObject:
   - component: {fileID: 4056366932071472298}
   - component: {fileID: 4056366932071472296}
   - component: {fileID: 4056366932071472297}
+  - component: {fileID: 3342914204742138107}
   m_Layer: 5
   m_Name: BidPlacerPopup
   m_TagString: Untagged
@@ -3732,6 +3733,28 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3342914204742138107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4056366932071472299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 213dd7a3f1127f24cb723678214c7e06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BidButtons:
+  - {fileID: 4056366931888667571}
+  - {fileID: 4056366931828779098}
+  - {fileID: 4056366933013918030}
+  - {fileID: 4056366931877248266}
+  - {fileID: 4056366932577592571}
+  - {fileID: 4056366931389300163}
+  - {fileID: 4056366931679421032}
+  - {fileID: 4056366933216199122}
+  SubmitButton: {fileID: 4056366931339890293}
 --- !u!1 &4056366932113487837
 GameObject:
   m_ObjectHideFlags: 0
@@ -4261,6 +4284,7 @@ GameObject:
   - component: {fileID: 4056366932248630238}
   - component: {fileID: 4056366932248630236}
   - component: {fileID: 4056366932248630237}
+  - component: {fileID: 2003897088501289867}
   m_Layer: 5
   m_Name: GameScreen
   m_TagString: Untagged
@@ -4347,6 +4371,34 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2003897088501289867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4056366932248630239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0674b465e80bdc64897bebd3fbb72cdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RoundText: {fileID: 4056366931414892873}
+  PlayerListContainer: {fileID: 4056366932742492450}
+  CurrentPlayerName: {fileID: 4056366931940398612}
+  LastPlayedCardContainer: {fileID: 4056366931990449696}
+  HighCardPlayerName: {fileID: 4056366932238451205}
+  HighCardContainer: {fileID: 4056366931769509159}
+  TrumpCardContainer: {fileID: 4056366932339568634}
+  YourBid: {fileID: 4056366932020140746}
+  YourTricks: {fileID: 4056366933011499809}
+  YourHandContainer: {fileID: 4056366931571239184}
+  ScoreSheetButton: {fileID: 4056366932168867948}
+  PlayCardButton: {fileID: 4056366931891741207}
+  BidPopup: {fileID: 3342914204742138107}
+  HandResultPopup: {fileID: 6979615979393380670}
+  RoundResultPopup: {fileID: 3400562052431959201}
+  ScorePopup: {fileID: 7233017034217871896}
 --- !u!1 &4056366932288637759
 GameObject:
   m_ObjectHideFlags: 0
@@ -6322,6 +6374,7 @@ GameObject:
   - component: {fileID: 729646222942270063}
   - component: {fileID: 8396364298052575738}
   - component: {fileID: 6184306100804272125}
+  - component: {fileID: 3400562052431959201}
   m_Layer: 5
   m_Name: RoundResultPopup
   m_TagString: Untagged
@@ -6395,6 +6448,29 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3400562052431959201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4503057699122625279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce0d9429cca6bb7439e37f6c819b529e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RoundNameText: {fileID: 1420119070304163767}
+  LeaderNames:
+  - {fileID: 2902223817922774771}
+  - {fileID: 249796412390215415}
+  - {fileID: 5031935975753970884}
+  LeaderScores:
+  - {fileID: 2502965177272560208}
+  - {fileID: 2404484671998265319}
+  - {fileID: 7693316319051667854}
+  ContinueButton: {fileID: 3311060882600499615}
+  ScoreSheetButton: {fileID: 104314524347638239}
 --- !u!1 &5601689045086087523
 GameObject:
   m_ObjectHideFlags: 0
@@ -6562,6 +6638,7 @@ GameObject:
   - component: {fileID: 3312604055037690550}
   - component: {fileID: 1541169508714533921}
   - component: {fileID: 6438440811508664737}
+  - component: {fileID: 6979615979393380670}
   m_Layer: 5
   m_Name: HandResultPopup
   m_TagString: Untagged
@@ -6626,6 +6703,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6979615979393380670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6345699811123671886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0207f89bdd94c0b49b6c6a483b30362d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ResultText: {fileID: 3855339879238024881}
 --- !u!1 &6427356544277340424
 GameObject:
   m_ObjectHideFlags: 0
@@ -7603,6 +7693,7 @@ GameObject:
   - component: {fileID: 7125985849944999863}
   - component: {fileID: 4056629552115698082}
   - component: {fileID: 7576353863140109342}
+  - component: {fileID: 7233017034217871896}
   m_Layer: 5
   m_Name: ScorePopup
   m_TagString: Untagged
@@ -7667,3 +7758,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7233017034217871896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8776312422147687189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0ea3f840449afe4e975af90da7fa224, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ScoreContainer: {fileID: 6310131649056967044}
+  CloseButton: {fileID: 6421097030675041842}
