@@ -8,7 +8,8 @@ public enum EventId
     TurnEnded,
     RoundEnded,
     GameEnded,
-    CardSelected
+    CardSelected,
+    PlayCardPressed
 }
 
 public delegate bool EventCallback(object cookie);

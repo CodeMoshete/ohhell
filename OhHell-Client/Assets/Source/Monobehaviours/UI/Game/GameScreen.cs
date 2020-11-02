@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,6 +33,16 @@ public class GameScreen : MonoBehaviour
         playerList = new List<PlayerNameItem>();
     }
 
+    private void Start()
+    {
+        PlayCardButton.onClick.AddListener(PlayCardPressed);
+    }
+
+    private void PlayCardPressed()
+    {
+        Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
+    }
+
     public void SyncGameState(GameData gameState, PlayerData localPlayer)
     {
         RoundText.text = string.Format("Round {0}/13", gameState.CurrentRoundNumber);
@@ -57,7 +66,7 @@ public class GameScreen : MonoBehaviour
         for (int i = 0, count = hand.Count; i < count; ++i)
         {
             Card card = hand[i];
-            playerHand.Add(CardView.CreateFromModel(card, YourHandContainer));
+            playerHand.Add(CardView.CreateFromModel(card, YourHandContainer, true));
         }
     }
 

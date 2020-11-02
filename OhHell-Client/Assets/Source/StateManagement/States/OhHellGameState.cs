@@ -84,6 +84,7 @@ public class OhHellGameState : IStateController
         Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
         gameScreen.SyncGameState(gameData, localPlayer);
         Service.EventManager.AddListener(EventId.CardSelected, OnCardSelected);
+        Service.EventManager.AddListener(EventId.PlayCardPressed, OnPlayCardPressed);
         Debug.Log("Game started!");
     }
 
@@ -109,6 +110,7 @@ public class OhHellGameState : IStateController
         gameData.CurrentTrumpCard = newDeck.DealCard();
         dealerIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
         gameData.CurrentDealerIndex = dealerIndex;
+        gameData.CurrentLeaderIndex = dealerIndex;
         gameData.CurrentPlayerTurnIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
         Service.WebRequests.SetGameState(gameData, (response) =>
         {
@@ -193,17 +195,27 @@ public class OhHellGameState : IStateController
         return false;
     }
 
+    private bool OnPlayCardPressed(object cookie)
+    {
+        if (CurrentSelectedCard != null)
+        {
+            PlayerTurnAction turnAction = new PlayerTurnAction();
+            turnAction.CardPlayed = CurrentSelectedCard;
+            turnAction.PlayerIndex = gameData.Players.IndexOf(localPlayer);
+            turnAction.IsRoundEnded = gameData.CurrentPlayerTurnIndex == gameData.CurrentLeaderIndex;
+            Service.WebRequests.SendGameAction(gameData, turnAction, (response) => {});
+        }
+        return false;
+    }
+
     private bool OnCardPlayed(object cookie)
     {
         PlayerTurnAction turn = (PlayerTurnAction)cookie;
         PlayerData turnPlayer = gameData.Players[turn.PlayerIndex];
-        if (turnPlayer != localPlayer)
-        {
-            turnPlayer.PlayCardFromHand(turn.CardPlayed);
-        }
+        turnPlayer.PlayCardFromHand(turn.CardPlayed);
         gameScreen.SetHighCard(gameData);
 
-        if (turnPlayer.PlayerName == gameData.Players[gameData.CurrentDealerIndex].PlayerName)
+        if (turnPlayer.PlayerName == gameData.Players[gameData.CurrentLeaderIndex].PlayerName)
         {
             // Award trick.
             if (localPlayer.IsHost)

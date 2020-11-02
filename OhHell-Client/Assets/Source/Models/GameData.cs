@@ -13,6 +13,7 @@ public class GameData
     // Game logic.
     public int CurrentPlayerTurnIndex;
     public int CurrentDealerIndex;
+    public int CurrentLeaderIndex;
     public int NumDealtCards;
     public int CurrentRoundNumber;
     public Card CurrentTrumpCard;
