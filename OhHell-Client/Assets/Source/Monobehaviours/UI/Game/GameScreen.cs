@@ -61,7 +61,7 @@ public class GameScreen : MonoBehaviour
         }
     }
 
-    private void SetHighCard(GameData gameState)
+    public void SetHighCard(GameData gameState)
     {
         if (HighCard != null)
         {

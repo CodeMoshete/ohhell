@@ -1,4 +1,5 @@
-﻿using Game.Controllers.Interfaces;
+﻿using DG.Tweening;
+using Game.Controllers.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,6 +31,8 @@ public class OhHellGameState : IStateController
 
     private int actionIndex;
     private Queue<IGameAction> currentPendingActions;
+
+    private Card CurrentSelectedCard;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
@@ -80,6 +83,7 @@ public class OhHellGameState : IStateController
         gameUi.SetActive(true);
         Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
         gameScreen.SyncGameState(gameData, localPlayer);
+        Service.EventManager.AddListener(EventId.CardSelected, OnCardSelected);
         Debug.Log("Game started!");
     }
 
@@ -182,8 +186,35 @@ public class OhHellGameState : IStateController
         return false;
     }
 
+    private bool OnCardSelected(object cookie)
+    {
+        CardView selectedCard = (CardView)cookie;
+        CurrentSelectedCard = selectedCard.CardData;
+        return false;
+    }
+
     private bool OnCardPlayed(object cookie)
     {
+        PlayerTurnAction turn = (PlayerTurnAction)cookie;
+        PlayerData turnPlayer = gameData.Players[turn.PlayerIndex];
+        if (turnPlayer != localPlayer)
+        {
+            turnPlayer.PlayCardFromHand(turn.CardPlayed);
+        }
+        gameScreen.SetHighCard(gameData);
+
+        if (turnPlayer.PlayerName == gameData.Players[gameData.CurrentDealerIndex].PlayerName)
+        {
+            // Award trick.
+            if (localPlayer.IsHost)
+            {
+                // Start next table turn.
+            }
+            return false;
+        }
+
+        gameData.IncrementTurnCounter();
+        gameScreen.SyncGameState(gameData, localPlayer);
         return false;
     }
 

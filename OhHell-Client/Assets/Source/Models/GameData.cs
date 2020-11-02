@@ -51,6 +51,16 @@ public class GameData
         }
     }
 
+    public void IncrementTurnCounter()
+    {
+        CurrentPlayerTurnIndex = (CurrentPlayerTurnIndex == Players.Count - 1) ? 0 : CurrentPlayerTurnIndex + 1;
+    }
+
+    public void IncrementDealerIndex()
+    {
+        CurrentDealerIndex = (CurrentDealerIndex == Players.Count - 1) ? 0 : CurrentDealerIndex + 1;
+    }
+
     public PlayerData TurnLeader
     {
         get
