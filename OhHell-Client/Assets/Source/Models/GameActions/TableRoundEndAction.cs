@@ -16,7 +16,7 @@ public class TableRoundEndAction : IGameAction
 
     public void ExecuteAction(Action onDone)
     {
-
+        Service.EventManager.SendEvent(EventId.RoundEnded, null);
     }
 
     public void PopulateFromJson(string json)

@@ -1,25 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 [Serializable]
-public class GameActionRecord
+public class GetActionsResponse
 {
     public int ActionIndex;
     public List<string> ActionTypes;
     public List<string> ActionDatas;
-
-    public GameActionRecord()
-    {
-        ActionTypes = new List<string>();
-        ActionDatas = new List<string>();
-    }
-
-    public void AddAction(IGameAction action)
-    {
-        ActionTypes.Add(action.ActionType);
-        ActionDatas.Add(JsonUtility.ToJson(action));
-    }
 
     public List<IGameAction> GetGameActionsFromRecord()
     {

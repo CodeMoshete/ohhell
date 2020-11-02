@@ -16,7 +16,7 @@ public class TableGameEndAction : IGameAction
 
     public void ExecuteAction(Action onDone)
     {
-
+        Service.EventManager.SendEvent(EventId.GameEnded, null);
     }
 
     public void PopulateFromJson(string json)

@@ -21,4 +21,14 @@ public class CardView : MonoBehaviour
             SuitSymbols[i].sprite = SuitTextures[(int)card.IntSuit];
         }
     }
+
+    public static CardView CreateFromModel(Card card, Transform parent)
+    {
+        GameObject newCard = GameObject.Instantiate(
+            Resources.Load<GameObject>(string.Format("Cards/{0}", card.FaceValue)),
+            parent);
+        CardView newCardView = newCard.GetComponent<CardView>();
+        newCardView.SetCard(card);
+        return newCardView;
+    }
 }

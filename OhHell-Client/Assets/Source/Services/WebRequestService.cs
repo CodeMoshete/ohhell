@@ -84,10 +84,11 @@ public class WebRequestService
         newRequests.Add(setStateRequest, onFinished);
     }
 
-    public void SendGameAction(IGameAction gameAction, Action<string> onFinished)
+    public void SendGameAction(GameData gameData, IGameAction gameAction, Action<string> onFinished)
     {
         UnityWebRequest setStateRequest = new UnityWebRequest("localhost:8082/game/addGameAction");
-        string messageBody = JsonUtility.ToJson(gameAction);
+        SetActionRequest requestData = new SetActionRequest(gameAction, gameData.GameName);
+        string messageBody = JsonUtility.ToJson(requestData);
         Debug.Log("GAME ACTION BODY: " + messageBody);
         setStateRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(messageBody));
         setStateRequest.downloadHandler = new DownloadHandlerBuffer();

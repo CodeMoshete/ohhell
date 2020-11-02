@@ -22,6 +22,7 @@ public struct OhHellGameLoadParams
 public class OhHellGameState : IStateController
 {
     private const float GAME_UPDATE_TIME = 3f;
+    private Action onLoaded;
     private GameObject gameUi;
     private GameScreen gameScreen;
     private GameData gameData;
@@ -32,22 +33,45 @@ public class OhHellGameState : IStateController
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
+        onLoaded = onLoadedCallback;
         OhHellGameLoadParams loadParams = (OhHellGameLoadParams)passedParams;
         gameData = loadParams.GameData;
         localPlayer = gameData.GetPlayerByName(loadParams.LocalPlayerName);
 
-        if (localPlayer.IsHost)
-        {
-            gameData.CurrentDealerIndex = gameData.Players.IndexOf(localPlayer);
-            DealCards();
-            gameData.IsLaunched = true;
-        }
+        Service.EventManager.AddListener(EventId.RoundBegun, OnRoundBegun);
+        Service.EventManager.AddListener(EventId.CardPlayed, OnCardPlayed);
+        Service.EventManager.AddListener(EventId.TurnEnded, OnTurnEnded);
+        Service.EventManager.AddListener(EventId.RoundEnded, OnRoundEnded);
+        Service.EventManager.AddListener(EventId.GameEnded, OnGameEnded);
 
         Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
         gameUi = GameObject.Instantiate(Resources.Load<GameObject>("GameScreen"), gameUiLayer);
+        gameUi.SetActive(false);
         gameScreen = gameUi.GetComponent<GameScreen>();
 
-        onLoadedCallback();
+        if (localPlayer.IsHost)
+        {
+            gameData.CurrentDealerIndex = gameData.Players.IndexOf(localPlayer);
+            gameData.IsLaunched = true;
+            DealCards();
+        }
+        else
+        {
+            Service.WebRequests.GetGameState(gameData, (response) =>
+            {
+                gameData = JsonUtility.FromJson<GameData>(response);
+                localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
+                gameScreen.SetPlayerHand(localPlayer.CurrentHand);
+                Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
+                onLoaded();
+            });
+        }
+    }
+
+    public void Start()
+    {
+        currentPendingActions = new Queue<IGameAction>();
+        Debug.Log("Game started!");
     }
 
     private void DealCards()
@@ -77,17 +101,12 @@ public class OhHellGameState : IStateController
         {
             TableRoundBeginAction beginRoundAction = new TableRoundBeginAction();
             beginRoundAction.IsRoundBegun = true;
-            Service.WebRequests.SendGameAction(beginRoundAction, (beginResponse) => 
+            Service.WebRequests.SendGameAction(gameData, beginRoundAction, (beginResponse) => 
             {
                 Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
+                onLoaded();
             });
         });
-    }
-
-    public void Start()
-    {
-        currentPendingActions = new Queue<IGameAction>();
-        Debug.Log("Game started!");
     }
 
     private void GetGameUpdates(object cookie)
@@ -97,8 +116,9 @@ public class OhHellGameState : IStateController
 
     private void ApplyNewGameActions(string actionsResponse)
     {
-        GameActionRecord actions = JsonUtility.FromJson<GameActionRecord>(actionsResponse);
+        GetActionsResponse actions = JsonUtility.FromJson<GetActionsResponse>(actionsResponse);
         List<IGameAction> newActions = actions.GetGameActionsFromRecord();
+        actionIndex = actions.ActionIndex;
         bool areActionsRunning = currentPendingActions.Count > 0;
         bool keepListening = true;
         for (int i = 0, count = newActions.Count; i < count; ++i)
@@ -126,6 +146,37 @@ public class OhHellGameState : IStateController
             nextAction.ExecuteAction(InvokeNextAction);
             actionIndex++;
         }
+    }
+
+    private bool OnRoundBegun(object cookie)
+    {
+        Service.WebRequests.GetGameState(gameData, (response) =>
+        {
+            gameData = JsonUtility.FromJson<GameData>(response);
+            localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
+            gameScreen.SyncGameState(gameData, localPlayer);
+        });
+        return false;
+    }
+
+    private bool OnCardPlayed(object cookie)
+    {
+        return false;
+    }
+
+    private bool OnTurnEnded(object cookie)
+    {
+        return false;
+    }
+
+    private bool OnRoundEnded(object cookie)
+    {
+        return false;
+    }
+
+    private bool OnGameEnded(object cookie)
+    {
+        return false;
     }
 
     public void Unload()

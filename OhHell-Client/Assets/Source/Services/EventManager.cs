@@ -2,7 +2,12 @@
 
 public enum EventId
 {
-    RefreshLobby
+    RefreshLobby,
+    RoundBegun,
+    CardPlayed,
+    TurnEnded,
+    RoundEnded,
+    GameEnded
 }
 
 public delegate bool EventCallback(object cookie);

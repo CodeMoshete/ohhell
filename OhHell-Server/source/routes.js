@@ -29,13 +29,13 @@ router.route('/getGamesList')
 router.route('/addGameAction')
   .post(async (req, res) => {
     debug(`Setting game action!\n${util.inspect(req.body)}`);
-    gameManager.setGameState(req.body);
+    gameManager.logGameAction(req.body);
     res.sendStatus(200);
   });
 
 router.route('/getGameActions')
   .get(async (req, res) => {
-    debug('Getting game state!');
+    debug('Getting game actions!');
     const gamesList = gameManager.getGameActions(req.query.gameName, req.query.actionIndex);
     res.send(gamesList);
   });
