@@ -24,6 +24,7 @@ public class CardView : MonoBehaviour
 
     public static CardView CreateFromModel(Card card, Transform parent)
     {
+        Debug.Log("Spawn card: " + card.FaceValue);
         GameObject newCard = GameObject.Instantiate(
             Resources.Load<GameObject>(string.Format("Cards/{0}", card.FaceValue)),
             parent);

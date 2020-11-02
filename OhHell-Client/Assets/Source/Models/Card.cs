@@ -33,11 +33,11 @@ public class Card
             {
                 case 0:
                     return "A";
-                case 11:
+                case 10:
                     return "J";
-                case 12:
+                case 11:
                     return "Q";
-                case 13:
+                case 12:
                     return "K";
                 default:
                     return (IntValue + 1).ToString();
