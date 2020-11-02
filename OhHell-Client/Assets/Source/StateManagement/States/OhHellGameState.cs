@@ -49,28 +49,36 @@ public class OhHellGameState : IStateController
         gameUi.SetActive(false);
         gameScreen = gameUi.GetComponent<GameScreen>();
 
-        if (localPlayer.IsHost)
+        if (gameData.IsLaunched)
         {
-            gameData.CurrentDealerIndex = gameData.Players.IndexOf(localPlayer);
-            gameData.IsLaunched = true;
-            DealCards();
+            SyncGameState(() =>
+            {
+                onLoaded();
+            });
         }
         else
         {
-            Service.WebRequests.GetGameState(gameData, (response) =>
+            if (localPlayer.IsHost)
             {
-                gameData = JsonUtility.FromJson<GameData>(response);
-                localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
-                gameScreen.SetPlayerHand(localPlayer.CurrentHand);
+                gameData.CurrentDealerIndex = gameData.Players.IndexOf(localPlayer);
+                gameData.IsLaunched = true;
+                DealCards();
+            }
+            else
+            {
                 Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
-                onLoaded();
-            });
+                SyncGameState(() =>
+                {
+                    onLoaded();
+                });
+            }
         }
     }
 
     public void Start()
     {
         currentPendingActions = new Queue<IGameAction>();
+        gameScreen.gameObject.SetActive(true);
         Debug.Log("Game started!");
     }
 
@@ -106,6 +114,22 @@ public class OhHellGameState : IStateController
                 Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
                 onLoaded();
             });
+        });
+    }
+
+    private void SyncGameState(Action onSynced)
+    {
+        Service.WebRequests.GetGameState(gameData, (response) =>
+        {
+            gameData = JsonUtility.FromJson<GameData>(response);
+            localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
+            gameScreen.SyncGameState(gameData, localPlayer);
+            Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
+
+            if (onSynced != null)
+            {
+                onSynced();
+            }
         });
     }
 
