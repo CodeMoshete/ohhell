@@ -28,7 +28,7 @@ public class GameScreen : MonoBehaviour
     private CardView HighCard;
     private CardView TrumpCard;
 
-    private void Start()
+    public GameScreen()
     {
         playerHand = new List<CardView>();
         playerList = new List<PlayerNameItem>();
