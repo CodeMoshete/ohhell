@@ -56,6 +56,7 @@ module.exports.getGameActions = function getGameActions(gameName, startIndex) {
   const actionTypes = [];
   const actionDatas = [];
   const numActions = actionContent.length;
+  debug(`START INDEX: ${startIndex}`);
   if (numActions > startIndex) {
     for (let i = startIndex; i < numActions; i += 1) {
       const action = actionContent[i];

@@ -17,6 +17,7 @@ public class TableTurnEndAction : IGameAction
     public void ExecuteAction(Action onDone)
     {
         Service.EventManager.SendEvent(EventId.TurnEnded, null);
+        onDone();
     }
 
     public void PopulateFromJson(string json)

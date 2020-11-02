@@ -147,10 +147,17 @@ public class OhHellGameState : IStateController
     {
         GetActionsResponse actions = JsonUtility.FromJson<GetActionsResponse>(actionsResponse);
         List<IGameAction> newActions = actions.GetGameActionsFromRecord();
+
+        int numNewActions = newActions.Count;
+        if (numNewActions == 0)
+        {
+            return;
+        }
+
         actionIndex = actions.ActionIndex;
         bool areActionsRunning = currentPendingActions.Count > 0;
         bool keepListening = true;
-        for (int i = 0, count = newActions.Count; i < count; ++i)
+        for (int i = 0; i < numNewActions; ++i)
         {
             currentPendingActions.Enqueue(newActions[i]);
             keepListening = newActions[i].ActionType != "TableGameEndAction";
@@ -172,6 +179,7 @@ public class OhHellGameState : IStateController
         if (currentPendingActions.Count > 0)
         {
             IGameAction nextAction = currentPendingActions.Dequeue();
+            Debug.Log("EXECUTE ACTION: " + nextAction.ActionType);
             nextAction.ExecuteAction(InvokeNextAction);
             actionIndex++;
         }
