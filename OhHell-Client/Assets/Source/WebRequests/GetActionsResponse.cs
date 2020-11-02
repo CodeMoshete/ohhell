@@ -17,6 +17,7 @@ public class GetActionsResponse
             Type actionType = Type.GetType(ActionTypes[i]);
             IGameAction gameAction = (IGameAction)Activator.CreateInstance(actionType);
             gameAction.PopulateFromJson(ActionDatas[i]);
+            gameActions.Add(gameAction);
         }
 
         return gameActions;
