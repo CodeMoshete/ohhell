@@ -81,6 +81,15 @@ public class OhHellLobbyState : IStateController
     {
         Service.WebRequests.GetGameState(gameData, (response) =>
         {
+            if (gameData.Players.Count == 1)
+            {
+                PlayerData dummyPlayer = new PlayerData();
+                dummyPlayer.PlayerName = "dummy";
+                dummyPlayer.CurrentHand = new List<Card>();
+                dummyPlayer.Bids = new List<int>();
+                dummyPlayer.Tricks = new List<int>();
+                gameData.Players.Add(dummyPlayer);
+            }
             onLaunchGame(gameData, localPlayerName);
         });
     }

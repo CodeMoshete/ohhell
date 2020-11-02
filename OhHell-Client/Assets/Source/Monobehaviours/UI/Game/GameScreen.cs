@@ -76,6 +76,7 @@ public class GameScreen : MonoBehaviour
         {
             GameObject.Destroy(HighCard);
             HighCard = null;
+            HighCardPlayerName.text = string.Empty;
         }
 
         PlayerData turnLeader = gameState.TurnLeader;
@@ -93,7 +94,7 @@ public class GameScreen : MonoBehaviour
             GameObject.Destroy(TrumpCard);
             TrumpCard = null;
         }
-        TrumpCard = CardView.CreateFromModel(gameState.CurrentTrumpCard, HighCardContainer);
+        TrumpCard = CardView.CreateFromModel(gameState.CurrentTrumpCard, TrumpCardContainer);
     }
 
     private void RefreshPlayerList(GameData gameState)
@@ -113,6 +114,7 @@ public class GameScreen : MonoBehaviour
             PlayerNameItem nameItem = playerEntry.GetComponent<PlayerNameItem>();
             nameItem.SetName(player.PlayerName);
             nameItem.SetNumTricks(player.CurrentTricks);
+            playerList.Add(nameItem);
         }
     }
 }

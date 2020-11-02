@@ -1834,7 +1834,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000012618797, y: 0}
+  m_AnchoredPosition: {x: 0.000012618797, y: 0.000015259}
   m_SizeDelta: {x: 0, y: 183}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4056366931571239190
@@ -4272,7 +4272,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Chiggsey Wiggsey
+  m_Text: 
 --- !u!1 &4056366932248630239
 GameObject:
   m_ObjectHideFlags: 0

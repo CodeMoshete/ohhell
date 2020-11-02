@@ -6,13 +6,25 @@ public class PlayerData
 {
     public string PlayerName;
     public bool IsHost;
-    public Card CurrentRoundCard;
+    private Card test;
+    public Card CurrentRoundCard
+    {
+        get { return test; }
+        set { test = value; }
+    }
     public List<Card> CurrentHand;
     public int CurrentBid;
     public int CurrentTricks;
     public List<int> Bids;
     public List<int> Tricks;
     public int TotalScore;
+
+    public PlayerData()
+    {
+        CurrentHand = new List<Card>();
+        Bids = new List<int>();
+        Tricks = new List<int>();
+    }
 
     public void PlayCardFromHand(Card card)
     {

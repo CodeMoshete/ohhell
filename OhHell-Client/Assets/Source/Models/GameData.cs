@@ -66,6 +66,11 @@ public class GameData
     {
         get
         {
+            if (CurrentLedCard != null && !CurrentLedCard.InitializedCard)
+            {
+                CurrentLedCard = null;
+            }
+
             PlayerData currentPlayerLeader = null;
             Card highCard = CurrentLedCard;
             for (int i = 0, count = Players.Count; i < count; ++i)

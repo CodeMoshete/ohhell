@@ -45,15 +45,19 @@ public class Card
         }
     }
 
+    public bool InitializedCard;
+
     public Card(CardSuit suit, uint faceValue)
     {
         IntSuit = (uint)suit;
         IntValue = faceValue;
+        InitializedCard = true;
     }
 
     public Card(uint suit, uint faceValue)
     {
         IntSuit = (uint)suit;
         IntValue = faceValue;
+        InitializedCard = true;
     }
 }
