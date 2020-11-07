@@ -46,6 +46,8 @@ public class OhHellGameState : IStateController
         Service.EventManager.AddListener(EventId.TurnEnded, OnTurnEnded);
         Service.EventManager.AddListener(EventId.RoundEnded, OnRoundEnded);
         Service.EventManager.AddListener(EventId.GameEnded, OnGameEnded);
+        Service.EventManager.AddListener(EventId.LocalBidPlaced, OnLocalBidPlaced);
+        Service.EventManager.AddListener(EventId.RemoteBidPlaced, OnRemoteBidPlaced);
 
         Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
         gameUi = GameObject.Instantiate(Resources.Load<GameObject>("GameScreen"), gameUiLayer);
@@ -90,6 +92,7 @@ public class OhHellGameState : IStateController
 
     private void DealCards()
     {
+        Debug.Log("Dealing cards...");
         int playerCount = gameData.Players.Count;
         int totalCardsNeeded = playerCount * 7;
         uint numDecks = (uint)Mathf.CeilToInt((float)totalCardsNeeded / 52f);
@@ -102,9 +105,14 @@ public class OhHellGameState : IStateController
         {
             for (int j = 0; j < playerCount; ++j)
             {
-                int playerIndex = (dealerIndex + j) % (playerCount - 1);
-                gameData.Players[j].CurrentHand.Add(newDeck.DealCard());
+                int playerIndex = (dealerIndex + j) % (playerCount);
+                gameData.Players[playerIndex].CurrentHand.Add(newDeck.DealCard());
             }
+        }
+
+        for (int j = 0; j < playerCount; ++j)
+        {
+            gameData.Players[j].CurrentBid = -1;
         }
 
         gameData.CurrentTrumpCard = newDeck.DealCard();
@@ -188,8 +196,33 @@ public class OhHellGameState : IStateController
             gameData = JsonUtility.FromJson<GameData>(response);
             localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
             gameScreen.SyncGameState(gameData, localPlayer);
+            gameScreen.BeginBidding(gameData);
         });
         return false;
+    }
+
+    private bool OnLocalBidPlaced(object cookie)
+    {
+        PlayerBidAction bidAction = new PlayerBidAction();
+        bidAction.PlayerBid = (int)cookie;
+        bidAction.PlayerIndex = gameData.Players.IndexOf(localPlayer);
+        Service.WebRequests.SendGameAction(gameData, bidAction, (response) => { });
+        return true;
+    }
+
+    private bool OnRemoteBidPlaced(object cookie)
+    {
+        PlayerBidAction bidAction = (PlayerBidAction)cookie;
+        PlayerData player = gameData.Players[bidAction.PlayerIndex];
+        player.CurrentBid = bidAction.PlayerBid;
+        player.Bids.Add(bidAction.PlayerBid);
+        if (gameData.AllBidsPlaced)
+        {
+            Debug.Log("All bids placed!");
+            gameScreen.EndBidding();
+            gameScreen.SyncGameState(gameData, localPlayer);
+        }
+        return true;
     }
 
     private bool OnCardSelected(object cookie)

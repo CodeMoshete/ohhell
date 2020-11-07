@@ -11,9 +11,15 @@ public class PlayerNameItem : MonoBehaviour
         NameField.text = name;
     }
 
-    public void SetNumTricks(int numTricks)
+    public void SetNumTricks(PlayerData playerData)
     {
-        TrickField.gameObject.SetActive(numTricks > 0);
-        TrickField.text = "Tricks: " + numTricks;
+        if (playerData.CurrentBid >= 0)
+        {
+            TrickField.text = "Tricks: " + playerData.CurrentTricks + "/" + playerData.CurrentBid;
+        }
+        else
+        {
+            TrickField.text = string.Empty;
+        }
     }
 }

@@ -36,6 +36,7 @@ public class GameScreen : MonoBehaviour
     private void Start()
     {
         PlayCardButton.onClick.AddListener(PlayCardPressed);
+        PlayCardButton.gameObject.SetActive(false);
     }
 
     private void PlayCardPressed()
@@ -113,8 +114,18 @@ public class GameScreen : MonoBehaviour
                 PlayerListContainer);
             PlayerNameItem nameItem = playerEntry.GetComponent<PlayerNameItem>();
             nameItem.SetName(player.PlayerName);
-            nameItem.SetNumTricks(player.CurrentTricks);
+            nameItem.SetNumTricks(player);
             playerList.Add(nameItem);
         }
+    }
+
+    public void BeginBidding(GameData gameData)
+    {
+        BidPopup.ShowBidPopup(gameData);
+    }
+
+    public void EndBidding()
+    {
+        BidPopup.HideBidPlacerPopup();
     }
 }

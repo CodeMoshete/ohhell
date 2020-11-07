@@ -62,6 +62,21 @@ public class GameData
         CurrentDealerIndex = (CurrentDealerIndex == Players.Count - 1) ? 0 : CurrentDealerIndex + 1;
     }
 
+    public bool AllBidsPlaced
+    {
+        get
+        {
+            for (int i = 0, count = Players.Count; i < count; ++i)
+            {
+                if (Players[i].CurrentBid < 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     public PlayerData TurnLeader
     {
         get

@@ -9,7 +9,9 @@ public enum EventId
     RoundEnded,
     GameEnded,
     CardSelected,
-    PlayCardPressed
+    PlayCardPressed,
+    LocalBidPlaced,
+    RemoteBidPlaced
 }
 
 public delegate bool EventCallback(object cookie);
