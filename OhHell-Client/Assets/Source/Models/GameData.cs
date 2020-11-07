@@ -107,6 +107,28 @@ public class GameData
         }
     }
 
+    public PlayerData LastPlayer
+    {
+        get
+        {
+            PlayerData turnLeader = TurnLeader;
+            if (CurrentLedCard != null)
+            {
+                int playerIndex = CurrentPlayerTurnIndex > 0 ? CurrentPlayerTurnIndex - 1 : Players.Count - 1;
+                while (playerIndex != CurrentPlayerTurnIndex)
+                {
+                    PlayerData testPlayer = Players[playerIndex];
+                    if (testPlayer != turnLeader && testPlayer.CurrentRoundCard != null)
+                    {
+                        return testPlayer;
+                    }
+                    playerIndex = playerIndex > 0 ? playerIndex - 1 : Players.Count - 1;
+                }
+            }
+            return null;
+        }
+    }
+
     public PlayerData TurnLeader
     {
         get

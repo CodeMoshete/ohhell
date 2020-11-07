@@ -266,8 +266,6 @@ public class OhHellGameState : IStateController
             if (localPlayer.IsHost)
             {
                 // Start next table turn.
-                gameData.TurnLeader.CurrentTricks++;
-                gameData.CurrentLedCard = null;
                 if (gameData.RoundOver)
                 {
                     TableRoundEndAction roundEndAction = new TableRoundEndAction();
@@ -291,6 +289,8 @@ public class OhHellGameState : IStateController
 
     private bool OnRemoteTurnEnded(object cookie)
     {
+        gameData.TurnLeader.CurrentTricks++;
+        gameScreen.ShowHandResult(gameData);
         return false;
     }
 

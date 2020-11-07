@@ -25,6 +25,7 @@ public class GameScreen : MonoBehaviour
     private List<CardView> playerHand;
     private List<PlayerNameItem> playerList;
     private CardView HighCard;
+    private CardView LastCard;
     private CardView TrumpCard;
 
     public GameScreen()
@@ -90,6 +91,18 @@ public class GameScreen : MonoBehaviour
             HighCard = CardView.CreateFromModel(turnLeader.CurrentRoundCard, HighCardContainer);
             HighCardPlayerName.text = turnLeader.PlayerName;
         }
+
+        if (LastCard != null)
+        {
+            GameObject.Destroy(LastCard);
+            LastCard = null;
+        }
+
+        PlayerData lastPlayer = gameState.LastPlayer;
+        if (lastPlayer != null)
+        {
+            LastCard = CardView.CreateFromModel(lastPlayer.CurrentRoundCard, LastPlayedCardContainer);
+        }
     }
 
     private void SetTrumpCard(GameData gameState)
@@ -140,7 +153,7 @@ public class GameScreen : MonoBehaviour
 
     public void ShowHandResult(GameData gameData)
     {
-        HandResultPopup.ShowHandResult(gameData);
+        HandResultPopup.ShowHandResult(gameData, 5f);
     }
 
     public void HideHandresult()

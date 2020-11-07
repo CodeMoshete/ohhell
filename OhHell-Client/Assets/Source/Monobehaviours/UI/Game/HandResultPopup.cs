@@ -5,7 +5,7 @@ public class HandResultPopup : MonoBehaviour
 {
     public Text ResultText;
 
-    public void ShowHandResult(GameData gameData)
+    public void ShowHandResult(GameData gameData, float displayTime = 0f)
     {
         gameObject.SetActive(true);
         PlayerData winningPlayer = gameData.TurnLeader;
@@ -13,6 +13,11 @@ public class HandResultPopup : MonoBehaviour
             "{0} won the trick with {1}!", 
             winningPlayer.PlayerName, 
             winningPlayer.CurrentRoundCard.ToString());
+
+        if (displayTime > 0f)
+        {
+            Service.TimerManager.CreateTimer(displayTime, (cookie) => { HideHandResultPopup(); }, null);
+        }
     }
 
     public void HideHandResultPopup()
