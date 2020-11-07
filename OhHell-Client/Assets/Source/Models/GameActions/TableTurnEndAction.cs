@@ -16,7 +16,7 @@ public class TableTurnEndAction : IGameAction
 
     public void ExecuteAction(Action onDone)
     {
-        Service.EventManager.SendEvent(EventId.TurnEnded, null);
+        Service.EventManager.SendEvent(EventId.RemoteTurnEnded, null);
         onDone();
     }
 

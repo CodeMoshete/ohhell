@@ -16,7 +16,7 @@ public class TableRoundEndAction : IGameAction
 
     public void ExecuteAction(Action onDone)
     {
-        Service.EventManager.SendEvent(EventId.RoundEnded, null);
+        Service.EventManager.SendEvent(EventId.RemoteRoundEnded, null);
         onDone();
     }
 

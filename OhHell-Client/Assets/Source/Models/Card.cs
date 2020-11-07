@@ -60,4 +60,9 @@ public class Card
         IntValue = faceValue;
         InitializedCard = true;
     }
+
+    public override string ToString()
+    {
+        return string.Format("{0} of {1}", FaceValue, Suit.ToString());
+    }
 }

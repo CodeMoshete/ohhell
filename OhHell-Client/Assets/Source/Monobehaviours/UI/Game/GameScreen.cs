@@ -37,6 +37,10 @@ public class GameScreen : MonoBehaviour
     {
         PlayCardButton.onClick.AddListener(PlayCardPressed);
         PlayCardButton.gameObject.SetActive(false);
+        ScoreSheetButton.onClick.AddListener(() =>
+        {
+            Service.EventManager.SendEvent(EventId.OnShowScoresClicked, null);
+        });
     }
 
     private void PlayCardPressed()
@@ -119,6 +123,11 @@ public class GameScreen : MonoBehaviour
         }
     }
 
+    public void ShowScoreSheet(GameData gameData)
+    {
+        ScorePopup.ShowScores(gameData);
+    }
+
     public void BeginBidding(GameData gameData)
     {
         BidPopup.ShowBidPopup(gameData);
@@ -127,5 +136,25 @@ public class GameScreen : MonoBehaviour
     public void EndBidding()
     {
         BidPopup.HideBidPlacerPopup();
+    }
+
+    public void ShowHandResult(GameData gameData)
+    {
+        HandResultPopup.ShowHandResult(gameData);
+    }
+
+    public void HideHandresult()
+    {
+        HandResultPopup.HideHandResultPopup();
+    }
+
+    public void ShowRoundResult(GameData gameData)
+    {
+        RoundResultPopup.ShowRoundResult(gameData);
+    }
+
+    public void AllowRoundResultContinue()
+    {
+        RoundResultPopup.ShowContinueButton();
     }
 }

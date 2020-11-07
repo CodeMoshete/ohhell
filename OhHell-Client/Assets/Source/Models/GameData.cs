@@ -77,6 +77,36 @@ public class GameData
         }
     }
 
+    public bool RoundOver
+    {
+        get
+        {
+            return Players[0].CurrentHand.Count == 0;
+        }
+    }
+
+    public List<PlayerData> Leaderboard
+    {
+        get
+        {
+            List<PlayerData> orderedPlayers = new List<PlayerData>();
+            orderedPlayers.AddRange(Players);
+            orderedPlayers.Sort((p1, p2) => 
+            { 
+                if (p1.TotalScore > p2.TotalScore)
+                {
+                    return 1;
+                }
+                else if (p1.TotalScore < p2.TotalScore)
+                {
+                    return -1;
+                }
+                return 0;
+            });
+            return orderedPlayers;
+        }
+    }
+
     public PlayerData TurnLeader
     {
         get

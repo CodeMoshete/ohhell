@@ -19,7 +19,7 @@ public class PlayerTurnAction : IGameAction
 
     public void ExecuteAction(Action onDone)
     {
-        Service.EventManager.SendEvent(EventId.CardPlayed, this);
+        Service.EventManager.SendEvent(EventId.RemoteCardPlayed, this);
         onDone();
     }
 

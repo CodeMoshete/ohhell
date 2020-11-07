@@ -4,14 +4,15 @@ public enum EventId
 {
     RefreshLobby,
     RoundBegun,
-    CardPlayed,
-    TurnEnded,
-    RoundEnded,
+    RemoteCardPlayed,
+    RemoteTurnEnded,
+    RemoteRoundEnded,
     GameEnded,
     CardSelected,
     PlayCardPressed,
     LocalBidPlaced,
-    RemoteBidPlaced
+    RemoteBidPlaced,
+    OnShowScoresClicked,
 }
 
 public delegate bool EventCallback(object cookie);

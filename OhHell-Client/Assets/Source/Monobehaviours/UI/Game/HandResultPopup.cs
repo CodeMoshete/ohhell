@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class HandResultPopup : MonoBehaviour
@@ -9,6 +7,16 @@ public class HandResultPopup : MonoBehaviour
 
     public void ShowHandResult(GameData gameData)
     {
+        gameObject.SetActive(true);
+        PlayerData winningPlayer = gameData.TurnLeader;
+        string resultMessage = string.Format(
+            "{0} won the trick with {1}!", 
+            winningPlayer.PlayerName, 
+            winningPlayer.CurrentRoundCard.ToString());
+    }
 
+    public void HideHandResultPopup()
+    {
+        gameObject.SetActive(false);
     }
 }

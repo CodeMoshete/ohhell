@@ -42,12 +42,13 @@ public class OhHellGameState : IStateController
         localPlayer = gameData.GetPlayerByName(loadParams.LocalPlayerName);
 
         Service.EventManager.AddListener(EventId.RoundBegun, OnRoundBegun);
-        Service.EventManager.AddListener(EventId.CardPlayed, OnCardPlayed);
-        Service.EventManager.AddListener(EventId.TurnEnded, OnTurnEnded);
-        Service.EventManager.AddListener(EventId.RoundEnded, OnRoundEnded);
+        Service.EventManager.AddListener(EventId.RemoteCardPlayed, OnRemoteCardPlayed);
+        Service.EventManager.AddListener(EventId.RemoteTurnEnded, OnRemoteTurnEnded);
+        Service.EventManager.AddListener(EventId.RemoteRoundEnded, OnRemoteRoundEnded);
         Service.EventManager.AddListener(EventId.GameEnded, OnGameEnded);
         Service.EventManager.AddListener(EventId.LocalBidPlaced, OnLocalBidPlaced);
         Service.EventManager.AddListener(EventId.RemoteBidPlaced, OnRemoteBidPlaced);
+        Service.EventManager.AddListener(EventId.OnShowScoresClicked, ShowScores);
 
         Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
         gameUi = GameObject.Instantiate(Resources.Load<GameObject>("GameScreen"), gameUiLayer);
@@ -86,7 +87,7 @@ public class OhHellGameState : IStateController
         Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
         gameScreen.SyncGameState(gameData, localPlayer);
         Service.EventManager.AddListener(EventId.CardSelected, OnCardSelected);
-        Service.EventManager.AddListener(EventId.PlayCardPressed, OnPlayCardPressed);
+        Service.EventManager.AddListener(EventId.PlayCardPressed, OnLocalCardPlayed);
         Debug.Log("Game started!");
     }
 
@@ -129,6 +130,12 @@ public class OhHellGameState : IStateController
                 onLoaded();
             });
         });
+    }
+
+    private bool ShowScores(object cookie)
+    {
+        gameScreen.ShowScoreSheet(gameData);
+        return true;
     }
 
     private void SyncGameState(Action onSynced)
@@ -232,7 +239,7 @@ public class OhHellGameState : IStateController
         return false;
     }
 
-    private bool OnPlayCardPressed(object cookie)
+    private bool OnLocalCardPlayed(object cookie)
     {
         if (CurrentSelectedCard != null)
         {
@@ -245,7 +252,7 @@ public class OhHellGameState : IStateController
         return false;
     }
 
-    private bool OnCardPlayed(object cookie)
+    private bool OnRemoteCardPlayed(object cookie)
     {
         PlayerTurnAction turn = (PlayerTurnAction)cookie;
         PlayerData turnPlayer = gameData.Players[turn.PlayerIndex];
@@ -254,10 +261,25 @@ public class OhHellGameState : IStateController
 
         if (turnPlayer.PlayerName == gameData.Players[gameData.CurrentLeaderIndex].PlayerName)
         {
+            Debug.Log("End of turns!");
             // Award trick.
             if (localPlayer.IsHost)
             {
                 // Start next table turn.
+                gameData.TurnLeader.CurrentTricks++;
+                gameData.CurrentLedCard = null;
+                if (gameData.RoundOver)
+                {
+                    TableRoundEndAction roundEndAction = new TableRoundEndAction();
+                    roundEndAction.IsRoundEnded = true;
+                    Service.WebRequests.SendGameAction(gameData, roundEndAction, (response) => { });
+                }
+                else
+                {
+                    TableTurnEndAction turnEndAction = new TableTurnEndAction();
+                    turnEndAction.IsEndOfTurn = true;
+                    Service.WebRequests.SendGameAction(gameData, turnEndAction, (response) => { });
+                }
             }
             return false;
         }
@@ -267,12 +289,12 @@ public class OhHellGameState : IStateController
         return false;
     }
 
-    private bool OnTurnEnded(object cookie)
+    private bool OnRemoteTurnEnded(object cookie)
     {
         return false;
     }
 
-    private bool OnRoundEnded(object cookie)
+    private bool OnRemoteRoundEnded(object cookie)
     {
         return false;
     }
