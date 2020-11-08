@@ -7,6 +7,7 @@ public class HandResultPopup : MonoBehaviour
 
     public void ShowHandResult(GameData gameData, float displayTime = 0f)
     {
+        Debug.Log("[POPUP] Show hand result");
         gameObject.SetActive(true);
         PlayerData winningPlayer = gameData.TurnLeader;
         string resultMessage = string.Format(

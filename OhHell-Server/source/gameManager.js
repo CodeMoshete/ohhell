@@ -50,7 +50,6 @@ module.exports.getGameActions = function getGameActions(gameName, startIndex) {
   let actionContent = [];
   if (fs.existsSync(gameActionFilePath)) {
     actionContent = JSON.parse(fs.readFileSync(gameActionFilePath));
-    debug(`READING ACTIONS:\n${JSON.stringify(actionContent, null, 2)}`);
   }
 
   const actionTypes = [];
@@ -72,7 +71,9 @@ module.exports.getGameActions = function getGameActions(gameName, startIndex) {
     ActionDatas: actionDatas
   };
 
-  return JSON.stringify(actionsRecord);
+  const response = JSON.stringify(actionsRecord);
+  debug(`ACTION UPDATE:\n${JSON.stringify(actionsRecord, null, 2)}`);
+  return response;
 };
 
 module.exports.getGamesList = function getGamesList() {

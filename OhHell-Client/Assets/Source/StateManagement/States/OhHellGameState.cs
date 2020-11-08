@@ -29,7 +29,7 @@ public class OhHellGameState : IStateController
     private GameData gameData;
     private PlayerData localPlayer;
 
-    private int actionIndex;
+    private int seenActionIndex;
     private Queue<IGameAction> currentPendingActions;
 
     private Card CurrentSelectedCard;
@@ -155,7 +155,7 @@ public class OhHellGameState : IStateController
 
     private void GetGameUpdates(object cookie)
     {
-        Service.WebRequests.GetGameActions(gameData, actionIndex, ApplyNewGameActions);
+        Service.WebRequests.GetGameActions(gameData, seenActionIndex, ApplyNewGameActions);
     }
 
     private void ApplyNewGameActions(string actionsResponse)
@@ -164,7 +164,7 @@ public class OhHellGameState : IStateController
         List<IGameAction> newActions = actions.GetGameActionsFromRecord();
         int numNewActions = newActions.Count;
 
-        actionIndex = actions.ActionIndex;
+        seenActionIndex = actions.ActionIndex;
         bool areActionsRunning = currentPendingActions.Count > 0;
         bool keepListening = true;
         for (int i = 0; i < numNewActions; ++i)
@@ -192,7 +192,6 @@ public class OhHellGameState : IStateController
             IGameAction nextAction = currentPendingActions.Dequeue();
             Debug.Log("EXECUTE ACTION: " + nextAction.ActionType);
             nextAction.ExecuteAction(InvokeNextAction);
-            actionIndex++;
         }
     }
 
