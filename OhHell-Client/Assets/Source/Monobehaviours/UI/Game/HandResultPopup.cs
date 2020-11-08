@@ -14,6 +14,7 @@ public class HandResultPopup : MonoBehaviour
             "{0} won the trick with {1}!", 
             winningPlayer.PlayerName, 
             winningPlayer.CurrentRoundCard.ToString());
+        ResultText.text = resultMessage;
 
         if (displayTime > 0f)
         {

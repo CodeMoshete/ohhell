@@ -62,6 +62,17 @@ public class GameData
         CurrentDealerIndex = (CurrentDealerIndex == Players.Count - 1) ? 0 : CurrentDealerIndex + 1;
     }
 
+    public void ClearTable()
+    {
+        for (int i = 0, count = Players.Count; i < count; ++i)
+        {
+            PlayerData currentPlayer = Players[i];
+            currentPlayer.CurrentRoundCard = null;
+        }
+
+        CurrentLedCard = null;
+    }
+
     public bool AllBidsPlaced
     {
         get

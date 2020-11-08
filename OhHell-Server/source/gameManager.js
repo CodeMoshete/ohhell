@@ -1,6 +1,7 @@
 const debug = require('debug')('ohhell-server');
 const path = require('path');
 const fs = require('fs');
+const { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } = require('constants');
 
 module.exports.setGameState = function setGameState(gameState) {
   const gameStateName = `gameState-${gameState.GameName}`;
@@ -55,9 +56,9 @@ module.exports.getGameActions = function getGameActions(gameName, startIndex) {
   const actionTypes = [];
   const actionDatas = [];
   const numActions = actionContent.length;
-  debug(`START INDEX: ${startIndex}`);
-  if (numActions > startIndex) {
-    for (let i = startIndex; i < numActions; i += 1) {
+  const intStartIndex = parseInt(startIndex, 10);
+  if (numActions > intStartIndex) {
+    for (let i = intStartIndex; i < numActions; i += 1) {
       const action = actionContent[i];
       actionTypes.push(action.ActionType);
       actionDatas.push(action.ActionData);

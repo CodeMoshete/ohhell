@@ -290,6 +290,16 @@ public class OhHellGameState : IStateController
     {
         gameData.TurnLeader.CurrentTricks++;
         gameScreen.ShowHandResult(gameData);
+
+        gameData.CurrentPlayerTurnIndex = gameData.Players.IndexOf(gameData.TurnLeader);
+        gameData.ClearTable();
+
+        Service.TimerManager.CreateTimer(5f, (timerCookie) =>
+        {
+            gameScreen.HideHandresult();
+            gameScreen.SyncGameState(gameData, localPlayer);
+        }, null);
+
         return false;
     }
 

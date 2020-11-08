@@ -153,7 +153,7 @@ public class GameScreen : MonoBehaviour
 
     public void ShowHandResult(GameData gameData)
     {
-        HandResultPopup.ShowHandResult(gameData, 5f);
+        HandResultPopup.ShowHandResult(gameData);
     }
 
     public void HideHandresult()
