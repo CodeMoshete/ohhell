@@ -257,7 +257,10 @@ public class OhHellGameState : IStateController
         turnPlayer.PlayCardFromHand(turn.CardPlayed);
         gameScreen.SetHighCard(gameData);
 
-        if (turnPlayer.PlayerName == gameData.Players[gameData.CurrentLeaderIndex].PlayerName)
+        gameData.IncrementTurnCounter();
+        PlayerData nextPlayer = gameData.Players[gameData.CurrentPlayerTurnIndex];
+
+        if (nextPlayer.PlayerName == gameData.Players[gameData.CurrentLeaderIndex].PlayerName)
         {
             Debug.Log("End of turns!");
             // Award trick.
@@ -280,7 +283,6 @@ public class OhHellGameState : IStateController
             return false;
         }
 
-        gameData.IncrementTurnCounter();
         gameScreen.SyncGameState(gameData, localPlayer);
         return false;
     }
