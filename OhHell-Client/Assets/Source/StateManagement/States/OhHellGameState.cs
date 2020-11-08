@@ -245,7 +245,6 @@ public class OhHellGameState : IStateController
             PlayerTurnAction turnAction = new PlayerTurnAction();
             turnAction.CardPlayed = CurrentSelectedCard;
             turnAction.PlayerIndex = gameData.Players.IndexOf(localPlayer);
-            turnAction.IsRoundEnded = gameData.CurrentPlayerTurnIndex == gameData.CurrentLeaderIndex;
             Service.WebRequests.SendGameAction(gameData, turnAction, (response) => {});
         }
         return false;
@@ -291,7 +290,7 @@ public class OhHellGameState : IStateController
         gameData.TurnLeader.CurrentTricks++;
         gameScreen.ShowHandResult(gameData);
 
-        gameData.CurrentPlayerTurnIndex = gameData.Players.IndexOf(gameData.TurnLeader);
+        gameData.CurrentLeaderIndex = gameData.Players.IndexOf(gameData.TurnLeader);
         gameData.ClearTable();
 
         Service.TimerManager.CreateTimer(5f, (timerCookie) =>

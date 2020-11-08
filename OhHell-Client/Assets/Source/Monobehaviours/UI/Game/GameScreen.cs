@@ -80,7 +80,7 @@ public class GameScreen : MonoBehaviour
     {
         if (HighCard != null)
         {
-            GameObject.Destroy(HighCard);
+            GameObject.Destroy(HighCard.gameObject);
             HighCard = null;
             HighCardPlayerName.text = string.Empty;
         }
@@ -94,7 +94,7 @@ public class GameScreen : MonoBehaviour
 
         if (LastCard != null)
         {
-            GameObject.Destroy(LastCard);
+            GameObject.Destroy(LastCard.gameObject);
             LastCard = null;
         }
 
