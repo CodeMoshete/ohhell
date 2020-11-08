@@ -119,8 +119,8 @@ public class OhHellGameState : IStateController
         gameData.CurrentTrumpCard = newDeck.DealCard();
         dealerIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
         gameData.CurrentDealerIndex = dealerIndex;
-        gameData.CurrentLeaderIndex = dealerIndex;
         gameData.CurrentPlayerTurnIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
+        gameData.CurrentLeaderIndex = gameData.CurrentPlayerTurnIndex;
         Service.WebRequests.SetGameState(gameData, (response) =>
         {
             TableRoundBeginAction beginRoundAction = new TableRoundBeginAction();
