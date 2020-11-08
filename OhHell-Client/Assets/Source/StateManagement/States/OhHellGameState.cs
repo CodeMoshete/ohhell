@@ -293,6 +293,7 @@ public class OhHellGameState : IStateController
         gameScreen.ShowHandResult(gameData);
 
         gameData.CurrentLeaderIndex = gameData.Players.IndexOf(gameData.TurnLeader);
+        gameData.CurrentPlayerTurnIndex = gameData.CurrentLeaderIndex;
         gameData.ClearTable();
 
         Service.TimerManager.CreateTimer(5f, (timerCookie) =>
