@@ -109,9 +109,11 @@ public class GameScreen : MonoBehaviour
     {
         if (TrumpCard != null)
         {
-            GameObject.Destroy(TrumpCard);
+            GameObject.Destroy(TrumpCard.gameObject);
             TrumpCard = null;
         }
+
+        Debug.Log("Trump card set to " + gameState.CurrentTrumpCard.ToString());
         TrumpCard = CardView.CreateFromModel(gameState.CurrentTrumpCard, TrumpCardContainer);
     }
 
