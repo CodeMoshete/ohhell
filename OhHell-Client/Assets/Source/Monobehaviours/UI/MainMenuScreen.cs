@@ -35,7 +35,7 @@ public class MainMenuScreen : MonoBehaviour
         //localPlayer.IsHost = true;
         //localPlayer.PlayerName = NameField.text;
         //localPlayer.CurrentRoundCard = new Card(CardSuit.Clubs, 10);
-        //gameData.Players.Add(localPlayer);
+        //gameData.Players.Add(localPmmmmmmmmlayer);
 
         //PlayerData dummyPlayer = new PlayerData();
         //dummyPlayer.PlayerName = "dummy";

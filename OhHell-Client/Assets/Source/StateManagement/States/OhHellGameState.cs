@@ -100,7 +100,7 @@ public class OhHellGameState : IStateController
         int dealerIndex = gameData.CurrentDealerIndex;
         CardDeck newDeck = new CardDeck(numDecks);
         newDeck.Shuffle();
-        gameData.CurrentRoundNumber = 1;
+        gameData.CurrentRoundNumber = 6;
 
         for (int i = 0, count = gameData.NumCardsToDeal; i < count; ++i)
         {
@@ -117,10 +117,10 @@ public class OhHellGameState : IStateController
         }
 
         gameData.CurrentTrumpCard = newDeck.DealCard();
-        dealerIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
-        gameData.CurrentDealerIndex = dealerIndex;
         gameData.CurrentPlayerTurnIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
         gameData.CurrentLeaderIndex = gameData.CurrentPlayerTurnIndex;
+        dealerIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
+        gameData.CurrentDealerIndex = dealerIndex;
         Service.WebRequests.SetGameState(gameData, (response) =>
         {
             TableRoundBeginAction beginRoundAction = new TableRoundBeginAction();
@@ -267,18 +267,9 @@ public class OhHellGameState : IStateController
             if (localPlayer.IsHost)
             {
                 // Start next table turn.
-                if (gameData.RoundOver)
-                {
-                    TableRoundEndAction roundEndAction = new TableRoundEndAction();
-                    roundEndAction.IsRoundEnded = true;
-                    Service.WebRequests.SendGameAction(gameData, roundEndAction, (response) => { });
-                }
-                else
-                {
-                    TableTurnEndAction turnEndAction = new TableTurnEndAction();
-                    turnEndAction.IsEndOfTurn = true;
-                    Service.WebRequests.SendGameAction(gameData, turnEndAction, (response) => { });
-                }
+                TableTurnEndAction turnEndAction = new TableTurnEndAction();
+                turnEndAction.IsEndOfTurn = true;
+                Service.WebRequests.SendGameAction(gameData, turnEndAction, (response) => { });
             }
             return false;
         }
@@ -298,8 +289,17 @@ public class OhHellGameState : IStateController
 
         Service.TimerManager.CreateTimer(5f, (timerCookie) =>
         {
-            gameScreen.HideHandresult();
-            gameScreen.SyncGameState(gameData, localPlayer);
+            if (gameData.RoundOver)
+            {
+                TableRoundEndAction roundEndAction = new TableRoundEndAction();
+                roundEndAction.IsRoundEnded = true;
+                Service.WebRequests.SendGameAction(gameData, roundEndAction, (response) => { });
+            }
+            else
+            {
+                gameScreen.HideHandresult();
+                gameScreen.SyncGameState(gameData, localPlayer);
+            }
         }, null);
 
         return false;
@@ -307,6 +307,8 @@ public class OhHellGameState : IStateController
 
     private bool OnRemoteRoundEnded(object cookie)
     {
+        gameScreen.HideHandresult();
+        gameScreen.ShowRoundResult(gameData);
         return false;
     }
 
