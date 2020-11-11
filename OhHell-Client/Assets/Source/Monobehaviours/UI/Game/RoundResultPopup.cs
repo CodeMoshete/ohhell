@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ public class RoundResultPopup : MonoBehaviour
     public List<Text> LeaderScores;
     public Button ContinueButton;
     public Button ScoreSheetButton;
+
+    private Action onScreenClosed;
 
     private void Start()
     {
@@ -33,13 +36,18 @@ public class RoundResultPopup : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    public void ShowContinueButton()
+    public void ShowContinueButton(Action onClosed = null)
     {
+        onScreenClosed = onClosed;
         ContinueButton.gameObject.SetActive(true);
     }
 
     public void HideRoundResult()
     {
         gameObject.SetActive(false);
+        if (onScreenClosed != null)
+        {
+            onScreenClosed();
+        }
     }
 }

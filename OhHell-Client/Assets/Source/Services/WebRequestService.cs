@@ -5,7 +5,8 @@ using UnityEngine.Networking;
 
 public class WebRequestService
 {
-    private const string BASE_ADDRESS = "http://10.0.0.238:8082";
+    //private const string BASE_ADDRESS = "http://10.0.0.238:8082";
+    private const string BASE_ADDRESS = "http://localhost:8082";
     private Dictionary<UnityWebRequest, Action<string>> activeRequests;
     private Dictionary<UnityWebRequest, Action<string>> newRequests;
     private List<UnityWebRequest> cleanupRequests;

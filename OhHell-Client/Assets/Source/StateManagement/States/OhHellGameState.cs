@@ -1,7 +1,5 @@
-﻿using DG.Tweening;
-using Game.Controllers.Interfaces;
+﻿using Game.Controllers.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,7 +49,9 @@ public class OhHellGameState : IStateController
         Service.EventManager.AddListener(EventId.OnShowScoresClicked, ShowScores);
 
         Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
-        gameUi = GameObject.Instantiate(Resources.Load<GameObject>("GameScreen"), gameUiLayer);
+        gameUi = GameObject.Instantiate(
+            Resources.Load<GameObject>("GameScreen"), 
+            gameUiLayer);
         gameUi.SetActive(false);
         gameScreen = gameUi.GetComponent<GameScreen>();
 
@@ -100,7 +100,6 @@ public class OhHellGameState : IStateController
         int dealerIndex = gameData.CurrentDealerIndex;
         CardDeck newDeck = new CardDeck(numDecks);
         newDeck.Shuffle();
-        gameData.CurrentRoundNumber = 6;
 
         for (int i = 0, count = gameData.NumCardsToDeal; i < count; ++i)
         {
@@ -117,7 +116,8 @@ public class OhHellGameState : IStateController
         }
 
         gameData.CurrentTrumpCard = newDeck.DealCard();
-        gameData.CurrentPlayerTurnIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
+        gameData.CurrentPlayerTurnIndex = 
+            (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
         gameData.CurrentLeaderIndex = gameData.CurrentPlayerTurnIndex;
         dealerIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
         gameData.CurrentDealerIndex = dealerIndex;
@@ -125,7 +125,8 @@ public class OhHellGameState : IStateController
         {
             TableRoundBeginAction beginRoundAction = new TableRoundBeginAction();
             beginRoundAction.IsRoundBegun = true;
-            Service.WebRequests.SendGameAction(gameData, beginRoundAction, (beginResponse) => 
+            Service.WebRequests.SendGameAction(gameData, beginRoundAction, 
+                (beginResponse) => 
             {
                 onLoaded();
             });
@@ -155,12 +156,14 @@ public class OhHellGameState : IStateController
 
     private void GetGameUpdates(object cookie)
     {
-        Service.WebRequests.GetGameActions(gameData, seenActionIndex, ApplyNewGameActions);
+        Service.WebRequests.GetGameActions(gameData, 
+            seenActionIndex, ApplyNewGameActions);
     }
 
     private void ApplyNewGameActions(string actionsResponse)
     {
-        GetActionsResponse actions = JsonUtility.FromJson<GetActionsResponse>(actionsResponse);
+        GetActionsResponse actions = 
+            JsonUtility.FromJson<GetActionsResponse>(actionsResponse);
         List<IGameAction> newActions = actions.GetGameActionsFromRecord();
         int numNewActions = newActions.Count;
 
@@ -260,7 +263,8 @@ public class OhHellGameState : IStateController
         gameData.IncrementTurnCounter();
         PlayerData nextPlayer = gameData.Players[gameData.CurrentPlayerTurnIndex];
 
-        if (nextPlayer.PlayerName == gameData.Players[gameData.CurrentLeaderIndex].PlayerName)
+        if (nextPlayer.PlayerName == 
+            gameData.Players[gameData.CurrentLeaderIndex].PlayerName)
         {
             Debug.Log("End of turns!");
             // Award trick.
@@ -269,7 +273,8 @@ public class OhHellGameState : IStateController
                 // Start next table turn.
                 TableTurnEndAction turnEndAction = new TableTurnEndAction();
                 turnEndAction.IsEndOfTurn = true;
-                Service.WebRequests.SendGameAction(gameData, turnEndAction, (response) => { });
+                Service.WebRequests.SendGameAction(gameData, turnEndAction, 
+                    (response) => { });
             }
             return false;
         }
@@ -293,7 +298,8 @@ public class OhHellGameState : IStateController
             {
                 TableRoundEndAction roundEndAction = new TableRoundEndAction();
                 roundEndAction.IsRoundEnded = true;
-                Service.WebRequests.SendGameAction(gameData, roundEndAction, (response) => { });
+                Service.WebRequests.SendGameAction(gameData, roundEndAction, 
+                    (response) => { });
             }
             else
             {
@@ -309,6 +315,18 @@ public class OhHellGameState : IStateController
     {
         gameScreen.HideHandresult();
         gameScreen.ShowRoundResult(gameData);
+        if (localPlayer.IsHost)
+        {
+            gameData.CurrentRoundNumber++;
+            DealCards();
+            Service.WebRequests.SetGameState(gameData, (response) =>
+            {
+                TableRoundBeginAction roundBeginAction = new TableRoundBeginAction();
+                roundBeginAction.IsRoundBegun = true;
+                Service.WebRequests.SendGameAction(gameData, 
+                    roundBeginAction, (res) => {});
+            });
+        }
         return false;
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -145,6 +146,11 @@ public class GameScreen : MonoBehaviour
 
     public void BeginBidding(GameData gameData)
     {
+        if (RoundResultPopup.gameObject.activeSelf)
+        {
+            AllowRoundResultContinue();
+            return;
+        }
         BidPopup.ShowBidPopup(gameData);
     }
 
@@ -168,8 +174,8 @@ public class GameScreen : MonoBehaviour
         RoundResultPopup.ShowRoundResult(gameData);
     }
 
-    public void AllowRoundResultContinue()
+    public void AllowRoundResultContinue(Action onClosed = null)
     {
-        RoundResultPopup.ShowContinueButton();
+        RoundResultPopup.ShowContinueButton(onClosed);
     }
 }
