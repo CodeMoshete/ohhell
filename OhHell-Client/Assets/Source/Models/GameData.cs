@@ -18,7 +18,6 @@ public class GameData
     public int NumDealtCards;
     public int CurrentRoundNumber;
     public Card CurrentTrumpCard;
-    public Card CurrentLedCard;
 
     public bool GetHasPlayer(string playerName)
     {
@@ -70,8 +69,6 @@ public class GameData
             PlayerData currentPlayer = Players[i];
             currentPlayer.CurrentRoundCard = null;
         }
-
-        CurrentLedCard = null;
     }
 
     public bool AllBidsPlaced
@@ -125,18 +122,15 @@ public class GameData
         get
         {
             PlayerData turnLeader = TurnLeader;
-            if (CurrentLedCard != null)
+            int playerIndex = CurrentLeaderIndex;
+            while (playerIndex != CurrentPlayerTurnIndex)
             {
-                int playerIndex = CurrentPlayerTurnIndex > 0 ? CurrentPlayerTurnIndex - 1 : Players.Count - 1;
-                while (playerIndex != CurrentPlayerTurnIndex)
+                PlayerData testPlayer = Players[playerIndex];
+                if (testPlayer != turnLeader && testPlayer.CurrentRoundCard != null)
                 {
-                    PlayerData testPlayer = Players[playerIndex];
-                    if (testPlayer != turnLeader && testPlayer.CurrentRoundCard != null)
-                    {
-                        return testPlayer;
-                    }
-                    playerIndex = playerIndex > 0 ? playerIndex - 1 : Players.Count - 1;
+                    return testPlayer;
                 }
+                playerIndex = playerIndex > 0 ? playerIndex - 1 : Players.Count - 1;
             }
             return null;
         }
@@ -146,11 +140,6 @@ public class GameData
     {
         get
         {
-            if (CurrentLedCard != null && !CurrentLedCard.InitializedCard)
-            {
-                CurrentLedCard = null;
-            }
-
             PlayerData currentPlayerLeader = null;
             Card highCard = null;
             int playerIndex = CurrentLeaderIndex;
@@ -201,7 +190,7 @@ public class GameData
                             }
                             
                             // Non-trump non-ace.
-                            if (currentPlayerCard.IntValue > highCard.IntValue)
+                            if (highCard.IntValue != 0 && currentPlayerCard.IntValue > highCard.IntValue)
                             {
                                 highCard = currentPlayerCard;
                                 currentPlayerLeader = player;

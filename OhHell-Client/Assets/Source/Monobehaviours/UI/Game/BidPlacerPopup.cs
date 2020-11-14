@@ -6,7 +6,8 @@ public class BidPlacerPopup : MonoBehaviour
 {
     public List<Button> BidButtons;
     public Button SubmitButton;
-    public Text BidPlacedText;
+    public GameObject BidPlacedText;
+    public GameObject LeadNotification;
 
     private int bidIndex;
 
@@ -20,7 +21,7 @@ public class BidPlacerPopup : MonoBehaviour
         SubmitButton.onClick.AddListener(OnSubmitClicked);
     }
 
-    public void ShowBidPopup(GameData gameData)
+    public void ShowBidPopup(GameData gameData, PlayerData player)
     {
         int maxBid = gameData.NumCardsToDeal;
         for (int i = 0, count = BidButtons.Count; i < count; ++i)
@@ -30,7 +31,8 @@ public class BidPlacerPopup : MonoBehaviour
             thisButton.interactable = true;
         }
         SubmitButton.gameObject.SetActive(true);
-        BidPlacedText.gameObject.SetActive(false);
+        BidPlacedText.SetActive(false);
+        LeadNotification.SetActive(gameData.Players.IndexOf(player) == gameData.CurrentLeaderIndex);
         gameObject.SetActive(true);
     }
 
@@ -48,7 +50,8 @@ public class BidPlacerPopup : MonoBehaviour
     private void OnSubmitClicked()
     {
         Service.EventManager.SendEvent(EventId.LocalBidPlaced, bidIndex);
-        BidPlacedText.gameObject.SetActive(true);
+        BidPlacedText.SetActive(true);
+        LeadNotification.SetActive(false);
         SubmitButton.gameObject.SetActive(false);
     }
 

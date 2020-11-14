@@ -205,7 +205,7 @@ public class OhHellGameState : IStateController
             gameData = JsonUtility.FromJson<GameData>(response);
             localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
             gameScreen.SyncGameState(gameData, localPlayer);
-            gameScreen.BeginBidding(gameData);
+            gameScreen.BeginBidding(gameData, localPlayer);
             Action OnDone = (Action)cookie;
             OnDone();
         });

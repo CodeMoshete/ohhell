@@ -146,17 +146,17 @@ public class GameScreen : MonoBehaviour
         ScorePopup.ShowScores(gameData);
     }
 
-    public void BeginBidding(GameData gameData)
+    public void BeginBidding(GameData gameData, PlayerData localPlayer)
     {
         if (RoundResultPopup.gameObject.activeSelf)
         {
             AllowRoundResultContinue(() =>
             {
-                BidPopup.ShowBidPopup(gameData);
+                BidPopup.ShowBidPopup(gameData, localPlayer);
             });
             return;
         }
-        BidPopup.ShowBidPopup(gameData);
+        BidPopup.ShowBidPopup(gameData, localPlayer);
     }
 
     public void EndBidding()

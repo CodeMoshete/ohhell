@@ -26,26 +26,26 @@ public class MainMenuScreen : MonoBehaviour
         NewGameButton.onClick.AddListener(OnNewGamePressed);
         RefreshButton.onClick.AddListener(RefreshLobbyPressed);
 
-        //GameData gameData = new GameData();
-        //gameData.GameName = NewGameNameField.text;
-        //gameData.Players = new List<PlayerData>();
-        //gameData.CurrentTrumpCard = new Card(CardSuit.Diamonds, 0);
+        GameData gameData = new GameData();
+        gameData.GameName = NewGameNameField.text;
+        gameData.Players = new List<PlayerData>();
+        gameData.CurrentTrumpCard = new Card(CardSuit.Diamonds, 0);
 
-        //PlayerData localPlayer = new PlayerData();
-        //localPlayer.IsHost = true;
-        //localPlayer.PlayerName = NameField.text;
-        //localPlayer.CurrentRoundCard = new Card(CardSuit.Spades, 4);
-        //gameData.Players.Add(localPlayer);
+        PlayerData localPlayer = new PlayerData();
+        localPlayer.IsHost = true;
+        localPlayer.PlayerName = NameField.text;
+        localPlayer.CurrentRoundCard = new Card(CardSuit.Spades, 0);
+        gameData.Players.Add(localPlayer);
 
-        //PlayerData dummyPlayer = new PlayerData();
-        //dummyPlayer.PlayerName = "dummy";
-        //dummyPlayer.CurrentHand = new List<Card>();
-        //dummyPlayer.Bids = new List<int>();
-        //dummyPlayer.Tricks = new List<int>();
-        //dummyPlayer.CurrentRoundCard = new Card(CardSuit.Hearts, 9);
-        //gameData.Players.Add(dummyPlayer);
+        PlayerData dummyPlayer = new PlayerData();
+        dummyPlayer.PlayerName = "dummy";
+        dummyPlayer.CurrentHand = new List<Card>();
+        dummyPlayer.Bids = new List<int>();
+        dummyPlayer.Tricks = new List<int>();
+        dummyPlayer.CurrentRoundCard = new Card(CardSuit.Spades, 4);
+        gameData.Players.Add(dummyPlayer);
 
-        //Debug.Log("Winner: " + gameData.TurnLeader.CurrentRoundCard.ToString());
+        Debug.Log("Winner: " + gameData.TurnLeader.CurrentRoundCard.ToString());
     }
 
     private void OnNewGamePressed()
