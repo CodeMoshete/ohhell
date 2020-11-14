@@ -69,6 +69,16 @@ public class OhHellGameState : IStateController
                 gameData.CurrentDealerIndex = gameData.Players.IndexOf(localPlayer);
                 gameData.IsLaunched = true;
                 DealCards();
+                Service.WebRequests.SetGameState(gameData, (response) =>
+                {
+                    TableRoundBeginAction beginRoundAction = new TableRoundBeginAction();
+                    beginRoundAction.IsRoundBegun = true;
+                    Service.WebRequests.SendGameAction(gameData, beginRoundAction,
+                        (beginResponse) =>
+                        {
+                            onLoaded();
+                        });
+                });
             }
             else
             {
@@ -121,16 +131,6 @@ public class OhHellGameState : IStateController
         gameData.CurrentLeaderIndex = gameData.CurrentPlayerTurnIndex;
         dealerIndex = (dealerIndex == playerCount - 1) ? 0 : dealerIndex + 1;
         gameData.CurrentDealerIndex = dealerIndex;
-        Service.WebRequests.SetGameState(gameData, (response) =>
-        {
-            TableRoundBeginAction beginRoundAction = new TableRoundBeginAction();
-            beginRoundAction.IsRoundBegun = true;
-            Service.WebRequests.SendGameAction(gameData, beginRoundAction, 
-                (beginResponse) => 
-            {
-                onLoaded();
-            });
-        });
     }
 
     private bool ShowScores(object cookie)
