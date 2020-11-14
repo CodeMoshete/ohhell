@@ -152,10 +152,13 @@ public class GameData
             }
 
             PlayerData currentPlayerLeader = null;
-            Card highCard = CurrentLedCard;
+            Card highCard = null;
+            int playerIndex = CurrentLeaderIndex;
             for (int i = 0, count = Players.Count; i < count; ++i)
             {
-                PlayerData player = Players[i];
+                PlayerData player = Players[playerIndex];
+                playerIndex = playerIndex >= Players.Count - 1 ? 0 : playerIndex + 1;
+
                 if (highCard == null)
                 {
                     // First card compared.
