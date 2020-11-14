@@ -206,6 +206,8 @@ public class OhHellGameState : IStateController
             localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
             gameScreen.SyncGameState(gameData, localPlayer);
             gameScreen.BeginBidding(gameData);
+            Action OnDone = (Action)cookie;
+            OnDone();
         });
         return false;
     }
@@ -225,6 +227,7 @@ public class OhHellGameState : IStateController
         PlayerData player = gameData.Players[bidAction.PlayerIndex];
         player.CurrentBid = bidAction.PlayerBid;
         player.Bids.Add(bidAction.PlayerBid);
+        Debug.Log("Player " + player.PlayerName + " placed a bid of " + player.CurrentBid + ". " + gameData.AllBidsPlaced);
         if (gameData.AllBidsPlaced)
         {
             Debug.Log("All bids placed!");
