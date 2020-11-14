@@ -25,7 +25,9 @@ public class BidPlacerPopup : MonoBehaviour
         int maxBid = gameData.NumCardsToDeal;
         for (int i = 0, count = BidButtons.Count; i < count; ++i)
         {
-            BidButtons[i].gameObject.SetActive(i <= maxBid);
+            Button thisButton = BidButtons[i];
+            thisButton.gameObject.SetActive(i <= maxBid);
+            thisButton.interactable = true;
         }
         SubmitButton.gameObject.SetActive(true);
         BidPlacedText.gameObject.SetActive(false);
