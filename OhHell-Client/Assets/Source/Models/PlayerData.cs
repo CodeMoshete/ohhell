@@ -17,7 +17,19 @@ public class PlayerData
     public int CurrentTricks;
     public List<int> Bids;
     public List<int> Tricks;
-    public int TotalScore;
+    public int TotalScore
+    {
+        get
+        {
+            int score = 0;
+            for (int i = 0, count = Bids.Count; i < count; ++i)
+            {
+                score = Bids[i] == Tricks[i] ? score + 10 : score;
+                score += Tricks[i];
+            }
+            return score;
+        }
+    }
 
     public PlayerData()
     {
