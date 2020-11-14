@@ -58,6 +58,8 @@ public class GameScreen : MonoBehaviour
         SetHighCard(gameState);
         SetTrumpCard(gameState);
         SetPlayerHand(localPlayer.CurrentHand);
+        YourBid.text = localPlayer.CurrentBid.ToString();
+        YourTricks.text = localPlayer.CurrentTricks.ToString();
         bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
         PlayCardButton.gameObject.SetActive(localPlayersTurn);
     }

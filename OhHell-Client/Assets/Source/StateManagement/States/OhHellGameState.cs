@@ -313,6 +313,7 @@ public class OhHellGameState : IStateController
             {
                 gameScreen.HideHandresult();
             }
+            gameScreen.SyncGameState(gameData, localPlayer);
         }, null);
 
         return false;
@@ -324,6 +325,7 @@ public class OhHellGameState : IStateController
         {
             PlayerData player = gameData.Players[i];
             player.Tricks[player.Tricks.Count - 1] = player.CurrentTricks;
+            player.CurrentTricks = 0;
         }
 
         gameScreen.HideHandresult();
