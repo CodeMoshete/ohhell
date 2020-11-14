@@ -148,7 +148,10 @@ public class GameScreen : MonoBehaviour
     {
         if (RoundResultPopup.gameObject.activeSelf)
         {
-            AllowRoundResultContinue();
+            AllowRoundResultContinue(() =>
+            {
+                BidPopup.ShowBidPopup(gameData);
+            });
             return;
         }
         BidPopup.ShowBidPopup(gameData);
