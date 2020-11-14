@@ -35,7 +35,7 @@ public class MainMenuScreen : MonoBehaviour
         //localPlayer.IsHost = true;
         //localPlayer.PlayerName = NameField.text;
         //localPlayer.CurrentRoundCard = new Card(CardSuit.Clubs, 10);
-        //gameData.Players.Add(localPmmmmmmmmlayer);
+        //gameData.Players.Add(localPlayer);
 
         //PlayerData dummyPlayer = new PlayerData();
         //dummyPlayer.PlayerName = "dummy";
@@ -60,6 +60,7 @@ public class MainMenuScreen : MonoBehaviour
             localPlayer.IsHost = true;
             localPlayer.PlayerName = NameField.text;
             gameData.Players.Add(localPlayer);
+            gameData.CurrentRoundNumber = 6;
 
             onJoinGame(gameData, localPlayer.PlayerName);
         }

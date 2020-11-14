@@ -24,7 +24,7 @@ public class RoundResultPopup : MonoBehaviour
 
     public void ShowRoundResult(GameData gameData)
     {
-        RoundNameText.text = string.Format("Round {0} Over!", gameData.CurrentRoundNumber - 1);
+        RoundNameText.text = string.Format("Round {0} Over!", gameData.CurrentRoundNumber);
         List<PlayerData> leaderboard = gameData.Leaderboard;
         int leaderCount = Mathf.Min(3, leaderboard.Count);
         for (int i = 0; i < leaderCount; ++i)

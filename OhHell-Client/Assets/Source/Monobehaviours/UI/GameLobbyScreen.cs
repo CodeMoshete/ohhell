@@ -50,7 +50,8 @@ public class GameLobbyScreen : MonoBehaviour
         }
         nameEntries.Clear();
 
-        for (int i = 0, count = gameData.Players.Count; i < count; ++i)
+        int numPlayers = gameData.Players.Count;
+        for (int i = 0; i < numPlayers; ++i)
         {
             GameObject playerEntry =
                 GameObject.Instantiate(PlayerNameEntryPrefab, PlayerListContainer);
@@ -58,5 +59,7 @@ public class GameLobbyScreen : MonoBehaviour
             namePanel.SetName(gameData.Players[i].PlayerName);
             nameEntries.Add(playerEntry);
         }
+
+        PlayerCountText.text = string.Format("Players: {0}", numPlayers);
     }
 }

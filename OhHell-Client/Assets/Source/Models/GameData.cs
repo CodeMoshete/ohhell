@@ -49,7 +49,7 @@ public class GameData
     {
         get
         {
-            return Math.Abs(CurrentRoundNumber - 7) + 1;
+            return Math.Abs(CurrentRoundNumber - 6) + 1;
         }
     }
 

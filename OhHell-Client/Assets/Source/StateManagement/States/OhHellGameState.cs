@@ -293,21 +293,24 @@ public class OhHellGameState : IStateController
 
         gameData.CurrentLeaderIndex = gameData.Players.IndexOf(gameData.TurnLeader);
         gameData.CurrentPlayerTurnIndex = gameData.CurrentLeaderIndex;
+        gameScreen.SyncGameState(gameData, localPlayer);
         gameData.ClearTable();
 
         Service.TimerManager.CreateTimer(5f, (timerCookie) =>
         {
             if (gameData.RoundOver)
             {
-                TableRoundEndAction roundEndAction = new TableRoundEndAction();
-                roundEndAction.IsRoundEnded = true;
-                Service.WebRequests.SendGameAction(gameData, roundEndAction, 
-                    (response) => { });
+                if (localPlayer.IsHost)
+                {
+                    TableRoundEndAction roundEndAction = new TableRoundEndAction();
+                    roundEndAction.IsRoundEnded = true;
+                    Service.WebRequests.SendGameAction(gameData, roundEndAction, 
+                        (response) => { });
+                }
             }
             else
             {
                 gameScreen.HideHandresult();
-                gameScreen.SyncGameState(gameData, localPlayer);
             }
         }, null);
 
