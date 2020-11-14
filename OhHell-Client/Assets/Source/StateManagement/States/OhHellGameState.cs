@@ -227,6 +227,7 @@ public class OhHellGameState : IStateController
         PlayerData player = gameData.Players[bidAction.PlayerIndex];
         player.CurrentBid = bidAction.PlayerBid;
         player.Bids.Add(bidAction.PlayerBid);
+        player.Tricks.Add(0);
         Debug.Log("Player " + player.PlayerName + " placed a bid of " + player.CurrentBid + ". " + gameData.AllBidsPlaced);
         if (gameData.AllBidsPlaced)
         {
@@ -319,6 +320,12 @@ public class OhHellGameState : IStateController
 
     private bool OnRemoteRoundEnded(object cookie)
     {
+        for (int i = 0, count = gameData.Players.Count; i < count; ++i)
+        {
+            PlayerData player = gameData.Players[i];
+            player.Tricks.Add(player.CurrentTricks);
+        }
+
         gameScreen.HideHandresult();
         gameScreen.ShowRoundResult(gameData);
         if (localPlayer.IsHost)
