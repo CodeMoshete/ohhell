@@ -323,7 +323,7 @@ public class OhHellGameState : IStateController
         for (int i = 0, count = gameData.Players.Count; i < count; ++i)
         {
             PlayerData player = gameData.Players[i];
-            player.Tricks.Add(player.CurrentTricks);
+            player.Tricks[player.Tricks.Count - 1] = player.CurrentTricks;
         }
 
         gameScreen.HideHandresult();
