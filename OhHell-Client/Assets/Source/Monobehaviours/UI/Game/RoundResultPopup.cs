@@ -27,10 +27,18 @@ public class RoundResultPopup : MonoBehaviour
         RoundNameText.text = string.Format("Round {0} Over!", gameData.CurrentRoundNumber);
         List<PlayerData> leaderboard = gameData.Leaderboard;
         int leaderCount = Mathf.Min(3, leaderboard.Count);
-        for (int i = 0; i < leaderCount; ++i)
+        for (int i = 0; i < 3; ++i)
         {
-            LeaderNames[i].text = leaderboard[i].PlayerName;
-            LeaderScores[i].text = leaderboard[i].TotalScore.ToString();
+            if (i < leaderCount)
+            {
+                LeaderNames[i].text = leaderboard[i].PlayerName;
+                LeaderScores[i].text = leaderboard[i].TotalScore.ToString();
+            }
+            else
+            {
+                LeaderNames[i].text = string.Empty;
+                LeaderScores[i].text = string.Empty;
+            }
         }
         ContinueButton.gameObject.SetActive(false);
         gameObject.SetActive(true);
