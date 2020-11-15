@@ -40,6 +40,13 @@ router.route('/getGameActions')
     res.send(gamesList);
   });
 
+router.route('/deleteGame')
+  .post(async (req, res) => {
+    debug(`Deleting game!\n${util.inspect(req.body)}`);
+    gameManager.deleteGame(req.body.gameName);
+    res.sendStatus(200);
+  });
+
 router.route('/')
   .get(async (req, res) => {
     res.send('Game server running!');

@@ -94,3 +94,18 @@ module.exports.getGamesList = function getGamesList() {
   debug(`Found ${allGamesData.length} games`);
   return JSON.stringify(returnData);
 };
+
+module.exports.deleteGame = function deleteGame(gameName) {
+  const gameStateBasePath = path.join(global.appRoot, 'gamestates');
+  const gameDataPath = path.join(gameStateBasePath, `gameState-${gameName}`);
+  if (fs.existsSync(gameDataPath)) {
+    fs.unlinkSync(gameDataPath);
+    debug(`Deleted ${gameDataPath}`);
+  }
+
+  const gameActionsPath = path.join(gameStateBasePath, `gameActions-${gameName}`);
+  if (fs.existsSync(gameActionsPath)) {
+    fs.unlinkSync(gameActionsPath);
+    debug(`Deleted ${gameActionsPath}`);
+  }
+};
