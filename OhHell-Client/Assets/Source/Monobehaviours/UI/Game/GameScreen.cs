@@ -49,9 +49,13 @@ public class GameScreen : MonoBehaviour
 
     private void PlayCardPressed()
     {
+        Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
+    }
+
+    public void CardPlayed()
+    {
         TurnProcessingNotif.SetActive(true);
         PlayCardButton.gameObject.SetActive(false);
-        Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
     }
 
     public void SyncGameState(GameData gameState, PlayerData localPlayer)
