@@ -136,6 +136,54 @@ public class GameData
         }
     }
 
+    public bool IsCardValid(Card card, PlayerData localPlayer)
+    {
+        bool isValid = true;
+        PlayerData leadPlayer = Players[CurrentLeaderIndex];
+        Card ledCard = Players[CurrentLeaderIndex].CurrentRoundCard;
+
+        if (ledCard != null)
+        {
+            // This is not the leading card.
+            bool isLedSuit = card.Suit == ledCard.Suit;
+            bool playerHasLedSuit = false;
+            for (int i = 0, count = localPlayer.CurrentHand.Count; i < count; ++i)
+            {
+                if (localPlayer.CurrentHand[i].Suit == ledCard.Suit)
+                {
+                    playerHasLedSuit = true;
+                    break;
+                }
+            }
+
+            if (!isLedSuit && playerHasLedSuit)
+            {
+                isValid = false;
+            }
+        }
+        else
+        {
+            // This is the leading card.
+            bool isTrumpSuit = card.Suit == CurrentTrumpCard.Suit;
+            bool playerHasNonTrump = false;
+            for (int i = 0, count = leadPlayer.CurrentHand.Count; i < count; ++i)
+            {
+                if (leadPlayer.CurrentHand[i].Suit != CurrentTrumpCard.Suit)
+                {
+                    playerHasNonTrump = true;
+                    break;
+                }
+            }
+
+            if (isTrumpSuit && playerHasNonTrump)
+            {
+                isValid = false;
+            }
+        }
+
+        return isValid;
+    }
+
     public PlayerData TurnLeader
     {
         get

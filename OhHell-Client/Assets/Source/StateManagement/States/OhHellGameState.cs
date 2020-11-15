@@ -247,7 +247,7 @@ public class OhHellGameState : IStateController
 
     private bool OnLocalCardPlayed(object cookie)
     {
-        if (CurrentSelectedCard != null)
+        if (CurrentSelectedCard != null && gameData.IsCardValid(CurrentSelectedCard, localPlayer))
         {
             PlayerTurnAction turnAction = new PlayerTurnAction();
             turnAction.CardPlayed = CurrentSelectedCard;
