@@ -328,7 +328,7 @@ public class OhHellGameState : IStateController
             player.CurrentTricks = 0;
         }
 
-        bool isGameOver = gameData.CurrentRoundNumber < 12;
+        bool isGameOver = gameData.CurrentRoundNumber >= 12;
         gameScreen.HideHandresult();
         gameScreen.ShowRoundResult(gameData, isGameOver);
         if (localPlayer.IsHost)
@@ -349,9 +349,9 @@ public class OhHellGameState : IStateController
             {
                 // Game over!
                 gameData.IsFinished = true;
-                SyncGameState(() =>
+                Service.WebRequests.SetGameState(gameData, (response) =>
                 {
-                    Debug.Log("Game Ended!");
+                    Debug.Log("Game Over!");
                 });
             }
         }

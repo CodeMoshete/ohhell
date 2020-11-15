@@ -18,6 +18,7 @@ public class GameScreen : MonoBehaviour
     public Button ScoreSheetButton;
     public Button PlayCardButton;
     public GameObject YourTurnNotif;
+    public GameObject TurnProcessingNotif;
 
     public BidPlacerPopup BidPopup;
     public HandResultPopup HandResultPopup;
@@ -48,6 +49,7 @@ public class GameScreen : MonoBehaviour
 
     private void PlayCardPressed()
     {
+        TurnProcessingNotif.SetActive(true);
         Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
     }
 
@@ -64,6 +66,7 @@ public class GameScreen : MonoBehaviour
         bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
         PlayCardButton.gameObject.SetActive(localPlayersTurn);
         YourTurnNotif.gameObject.SetActive(localPlayersTurn);
+        TurnProcessingNotif.SetActive(false);
     }
 
     public void SetPlayerHand(List<Card> hand)
