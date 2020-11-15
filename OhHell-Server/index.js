@@ -12,7 +12,7 @@ const app = express();
 app.use(bodyParser.json()); // Set up express to use json parser.
 app.use(cors()); // Enable cross-origin resource sharing (web security thing).// Set up routing.
 app.use('/game', gameRouter);
-app.use(express.static('./static_content'));
+app.use(express.static('./bin'));
 const listenPort = 8082;
 app.listen(listenPort, () => {
   debug(`Listening on port ${chalk.green(listenPort)}`);
