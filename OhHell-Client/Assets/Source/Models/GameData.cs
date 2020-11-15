@@ -129,7 +129,7 @@ public class GameData
                 playerIndex++;
             }
 
-            while (playerIndex != CurrentPlayerTurnIndex)
+            while (playerIndex != -1 && playerIndex != CurrentPlayerTurnIndex)
             {
                 PlayerData testPlayer = Players[playerIndex];
                 if (testPlayer != turnLeader && testPlayer.CurrentRoundCard != null)
