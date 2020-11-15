@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 3575080372922567068}
   - component: {fileID: 5689149998779040512}
   m_Layer: 5
-  m_Name: BidText (2)
+  m_Name: PointsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 8536892764679624258}
   - component: {fileID: 8618217852429352906}
   m_Layer: 5
-  m_Name: BidText (3)
+  m_Name: ScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -246,7 +246,7 @@ GameObject:
   - component: {fileID: 1091917266461441621}
   - component: {fileID: 5712977395111929546}
   m_Layer: 5
-  m_Name: BidText (1)
+  m_Name: TricksText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -405,6 +405,7 @@ GameObject:
   - component: {fileID: 1727000938288387233}
   - component: {fileID: 2129577050050714070}
   - component: {fileID: 8014242247757085235}
+  - component: {fileID: 513089268602958693}
   m_Layer: 5
   m_Name: ScoreField
   m_TagString: Untagged
@@ -474,6 +475,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &513089268602958693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4812678196332842420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06aaca64a2781f9499aeaf7cd2afa6cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RoundLabel: {fileID: 4276337536920238260}
+  BidLabel: {fileID: 428809149659800405}
+  TricksLabel: {fileID: 5712977395111929546}
+  PointsLabel: {fileID: 5689149998779040512}
+  ScoreLabel: {fileID: 8618217852429352906}
 --- !u!1 &7452418806685018182
 GameObject:
   m_ObjectHideFlags: 0

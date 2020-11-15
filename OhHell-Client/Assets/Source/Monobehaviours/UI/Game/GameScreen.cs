@@ -17,6 +17,7 @@ public class GameScreen : MonoBehaviour
     public Transform YourHandContainer;
     public Button ScoreSheetButton;
     public Button PlayCardButton;
+    public GameObject YourTurnNotif;
 
     public BidPlacerPopup BidPopup;
     public HandResultPopup HandResultPopup;
@@ -62,6 +63,7 @@ public class GameScreen : MonoBehaviour
         YourTricks.text = localPlayer.CurrentTricks.ToString();
         bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
         PlayCardButton.gameObject.SetActive(localPlayersTurn);
+        YourTurnNotif.gameObject.SetActive(localPlayersTurn);
     }
 
     public void SetPlayerHand(List<Card> hand)
@@ -174,9 +176,9 @@ public class GameScreen : MonoBehaviour
         HandResultPopup.HideHandResultPopup();
     }
 
-    public void ShowRoundResult(GameData gameData)
+    public void ShowRoundResult(GameData gameData, bool isGameOver)
     {
-        RoundResultPopup.ShowRoundResult(gameData);
+        RoundResultPopup.ShowRoundResult(gameData, isGameOver);
     }
 
     public void AllowRoundResultContinue(Action onClosed = null)

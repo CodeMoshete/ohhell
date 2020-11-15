@@ -6,11 +6,10 @@ public class ScorePopup : MonoBehaviour
 {
     public Transform ScoreContainer;
     public Button CloseButton;
-    private List<ScoreColumn> Columns;
+    private List<ScoreColumn> Columns = new List<ScoreColumn>();
 
     private void Start()
     {
-        Columns = new List<ScoreColumn>();
         CloseButton.onClick.AddListener(OnClose);
     }
 

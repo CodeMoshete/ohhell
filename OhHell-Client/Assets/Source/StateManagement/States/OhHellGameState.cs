@@ -328,19 +328,32 @@ public class OhHellGameState : IStateController
             player.CurrentTricks = 0;
         }
 
+        bool isGameOver = gameData.CurrentRoundNumber < 12;
         gameScreen.HideHandresult();
-        gameScreen.ShowRoundResult(gameData);
+        gameScreen.ShowRoundResult(gameData, isGameOver);
         if (localPlayer.IsHost)
         {
-            gameData.CurrentRoundNumber++;
-            DealCards();
-            Service.WebRequests.SetGameState(gameData, (response) =>
+            if (!isGameOver)
             {
-                TableRoundBeginAction roundBeginAction = new TableRoundBeginAction();
-                roundBeginAction.IsRoundBegun = true;
-                Service.WebRequests.SendGameAction(gameData, 
-                    roundBeginAction, (res) => {});
-            });
+                gameData.CurrentRoundNumber++;
+                DealCards();
+                Service.WebRequests.SetGameState(gameData, (response) =>
+                {
+                    TableRoundBeginAction roundBeginAction = new TableRoundBeginAction();
+                    roundBeginAction.IsRoundBegun = true;
+                    Service.WebRequests.SendGameAction(gameData, 
+                        roundBeginAction, (res) => {});
+                });
+            }
+            else
+            {
+                // Game over!
+                gameData.IsFinished = true;
+                SyncGameState(() =>
+                {
+                    Debug.Log("Game Ended!");
+                });
+            }
         }
         return false;
     }
