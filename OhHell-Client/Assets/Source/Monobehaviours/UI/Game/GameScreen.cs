@@ -50,6 +50,7 @@ public class GameScreen : MonoBehaviour
     private void PlayCardPressed()
     {
         TurnProcessingNotif.SetActive(true);
+        PlayCardButton.gameObject.SetActive(false);
         Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
     }
 
