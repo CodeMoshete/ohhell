@@ -19,6 +19,8 @@ public class GameScreen : MonoBehaviour
     public Button PlayCardButton;
     public GameObject YourTurnNotif;
     public GameObject TurnProcessingNotif;
+    public GameObject CardNotificationContainer;
+    public Text CardNotificationText;
 
     public BidPlacerPopup BidPopup;
     public HandResultPopup HandResultPopup;
@@ -45,6 +47,19 @@ public class GameScreen : MonoBehaviour
         {
             Service.EventManager.SendEvent(EventId.OnShowScoresClicked, null);
         });
+
+        Service.EventManager.AddListener(EventId.ShowCardNotification, OnCardNotification);
+    }
+
+    private bool OnCardNotification(object cookie)
+    {
+        CardNotificationContainer.SetActive(true);
+        CardNotificationText.text = (string)cookie;
+        Service.TimerManager.CreateTimer(5f, (c) =>
+        {
+            CardNotificationContainer.SetActive(false);
+        }, null);
+        return true;
     }
 
     private void PlayCardPressed()

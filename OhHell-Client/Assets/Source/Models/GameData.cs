@@ -141,6 +141,15 @@ public class GameData
         bool isValid = true;
         PlayerData leadPlayer = Players[CurrentLeaderIndex];
         Card ledCard = Players[CurrentLeaderIndex].CurrentRoundCard;
+        bool isFirstTurn = true;
+        for (int i = 0, count = Players.Count; i < count; ++i)
+        {
+            if (Players[i].CurrentTricks > 0)
+            {
+                isFirstTurn = false;
+                break;
+            }
+        }
 
         if (ledCard != null)
         {
@@ -159,6 +168,8 @@ public class GameData
             if (!isLedSuit && playerHasLedSuit)
             {
                 isValid = false;
+                string msg = "You must follow the suit that was led.";
+                Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
             }
         }
         else
@@ -175,9 +186,11 @@ public class GameData
                 }
             }
 
-            if (isTrumpSuit && playerHasNonTrump)
+            if (isTrumpSuit && playerHasNonTrump && isFirstTurn)
             {
                 isValid = false;
+                string msg = "You cannot lead trump on the first turn of a round.";
+                Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
             }
         }
 

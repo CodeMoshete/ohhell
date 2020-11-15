@@ -13,6 +13,7 @@ public enum EventId
     LocalBidPlaced,
     RemoteBidPlaced,
     OnShowScoresClicked,
+    ShowCardNotification
 }
 
 public delegate bool EventCallback(object cookie);
