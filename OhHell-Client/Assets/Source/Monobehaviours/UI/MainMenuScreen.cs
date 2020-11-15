@@ -60,7 +60,6 @@ public class MainMenuScreen : MonoBehaviour
             localPlayer.IsHost = true;
             localPlayer.PlayerName = NameField.text;
             gameData.Players.Add(localPlayer);
-            gameData.CurrentRoundNumber = 11;
 
             onJoinGame(gameData, localPlayer.PlayerName);
         }

@@ -75,7 +75,7 @@ public class GameScreen : MonoBehaviour
 
     public void SyncGameState(GameData gameState, PlayerData localPlayer)
     {
-        RoundText.text = string.Format("Round {0}/13", gameState.CurrentRoundNumber);
+        RoundText.text = string.Format("Round {0}/13", gameState.CurrentRoundNumber + 1);
         RefreshPlayerList(gameState);
         CurrentPlayerName.text = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName;
         SetHighCard(gameState);
