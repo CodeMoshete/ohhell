@@ -105,11 +105,11 @@ public class GameData
             { 
                 if (p1.TotalScore > p2.TotalScore)
                 {
-                    return 1;
+                    return -1;
                 }
                 else if (p1.TotalScore < p2.TotalScore)
                 {
-                    return -1;
+                    return 1;
                 }
                 return 0;
             });
@@ -121,18 +121,24 @@ public class GameData
     {
         get
         {
+            PlayerData lastPlayer = null;
             PlayerData turnLeader = TurnLeader;
             int playerIndex = CurrentLeaderIndex;
+            if (CurrentLeaderIndex == CurrentPlayerTurnIndex)
+            {
+                playerIndex++;
+            }
+
             while (playerIndex != CurrentPlayerTurnIndex)
             {
                 PlayerData testPlayer = Players[playerIndex];
                 if (testPlayer != turnLeader && testPlayer.CurrentRoundCard != null)
                 {
-                    return testPlayer;
+                    lastPlayer = testPlayer;
                 }
-                playerIndex = playerIndex > 0 ? playerIndex - 1 : Players.Count - 1;
+                playerIndex = playerIndex < Players.Count - 1 ? playerIndex + 1 : 0;
             }
-            return null;
+            return lastPlayer;
         }
     }
 

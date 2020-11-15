@@ -263,7 +263,6 @@ public class OhHellGameState : IStateController
         PlayerTurnAction turn = (PlayerTurnAction)cookie;
         PlayerData turnPlayer = gameData.Players[turn.PlayerIndex];
         turnPlayer.PlayCardFromHand(turn.CardPlayed);
-        gameScreen.SetHighCard(gameData);
 
         gameData.IncrementTurnCounter();
         PlayerData nextPlayer = gameData.Players[gameData.CurrentPlayerTurnIndex];
@@ -271,6 +270,7 @@ public class OhHellGameState : IStateController
         if (nextPlayer.PlayerName == 
             gameData.Players[gameData.CurrentLeaderIndex].PlayerName)
         {
+            gameScreen.SetHighCard(gameData);
             Debug.Log("End of turns!");
             // Award trick.
             if (localPlayer.IsHost)
@@ -295,7 +295,7 @@ public class OhHellGameState : IStateController
 
         gameData.CurrentLeaderIndex = gameData.Players.IndexOf(gameData.TurnLeader);
         gameData.CurrentPlayerTurnIndex = gameData.CurrentLeaderIndex;
-        gameScreen.SyncGameState(gameData, localPlayer);
+        //gameScreen.SyncGameState(gameData, localPlayer);
         gameData.ClearTable();
 
         Service.TimerManager.CreateTimer(5f, (timerCookie) =>

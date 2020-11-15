@@ -7,8 +7,8 @@ public class GameScreen : MonoBehaviour
 {
     public Text RoundText;
     public Transform PlayerListContainer;
-    public Text CurrentPlayerName;
     public Transform LastPlayedCardContainer;
+    public Text LedSuitField;
     public Text HighCardPlayerName;
     public Transform HighCardContainer;
     public Transform TrumpCardContainer;
@@ -77,13 +77,14 @@ public class GameScreen : MonoBehaviour
     {
         RoundText.text = string.Format("Round {0}/13", gameState.CurrentRoundNumber + 1);
         RefreshPlayerList(gameState);
-        CurrentPlayerName.text = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName;
         SetHighCard(gameState);
         SetTrumpCard(gameState);
         SetPlayerHand(localPlayer.CurrentHand);
         YourBid.text = localPlayer.CurrentBid.ToString();
         YourTricks.text = localPlayer.CurrentTricks.ToString();
         bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
+        Card ledCard = gameState.Players[gameState.CurrentLeaderIndex].CurrentRoundCard;
+        LedSuitField.text = ledCard != null ? string.Format("Led Suit: {0}", ledCard.Suit.ToString()) : string.Empty;
         PlayCardButton.gameObject.SetActive(localPlayersTurn);
         YourTurnNotif.gameObject.SetActive(localPlayersTurn);
         TurnProcessingNotif.SetActive(false);
@@ -162,6 +163,7 @@ public class GameScreen : MonoBehaviour
             PlayerNameItem nameItem = playerEntry.GetComponent<PlayerNameItem>();
             nameItem.SetName(player.PlayerName);
             nameItem.SetNumTricks(player);
+            nameItem.SetTurnHighlight(gameState.CurrentPlayerTurnIndex == gameState.Players.IndexOf(player));
             playerList.Add(nameItem);
         }
     }

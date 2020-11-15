@@ -11,6 +11,11 @@ public class PlayerNameItem : MonoBehaviour
         NameField.text = name;
     }
 
+    public void SetTurnHighlight(bool isTurn)
+    {
+        NameField.color = isTurn ? Color.red : Color.black;
+    }
+
     public void SetNumTricks(PlayerData playerData)
     {
         if (playerData.CurrentBid >= 0)

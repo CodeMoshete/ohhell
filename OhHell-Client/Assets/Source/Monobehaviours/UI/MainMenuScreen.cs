@@ -90,7 +90,7 @@ public class MainMenuScreen : MonoBehaviour
     {
         for (int i = 0, numGames = activeGamesList.Count; i < numGames; ++i)
         {
-            GameObject.Destroy(activeGamesList[i]);
+            GameObject.Destroy(activeGamesList[i].gameObject);
         }
         activeGamesList.Clear();
 
