@@ -126,7 +126,7 @@ public class GameData
             int playerIndex = CurrentLeaderIndex;
             if (CurrentLeaderIndex == CurrentPlayerTurnIndex)
             {
-                playerIndex++;
+                playerIndex = playerIndex == Players.Count - 1 ? 0 : playerIndex + 1;
             }
 
             while (playerIndex != -1 && playerIndex != CurrentPlayerTurnIndex)
