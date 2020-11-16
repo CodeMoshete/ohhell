@@ -75,13 +75,6 @@ public class MainMenuScreen : MonoBehaviour
         string playerName = NameField.text;
         if (playerName != string.Empty)
         {
-            if (!gameData.GetHasPlayer(NameField.text))
-            {
-                PlayerData localPlayer = new PlayerData();
-                localPlayer.IsHost = false;
-                localPlayer.PlayerName = NameField.text;
-                gameData.Players.Add(localPlayer);
-            }
             onJoinGame(gameData, playerName);
         }
     }

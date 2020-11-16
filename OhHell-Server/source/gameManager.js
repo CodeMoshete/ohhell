@@ -1,7 +1,6 @@
 const debug = require('debug')('ohhell-server');
 const path = require('path');
 const fs = require('fs');
-const { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } = require('constants');
 
 module.exports.setGameState = function setGameState(gameState) {
   const gameStateName = `gameState-${gameState.GameName}`;
@@ -20,8 +19,12 @@ module.exports.getGameState = function getGameState(gameName) {
   const gameStateName = `gameState-${gameName}`;
   const gameStateBasePath = path.join(global.appRoot, 'gamestates');
   const gameStateFilePath = path.join(gameStateBasePath, gameStateName);
+  let gameStateContent = false;
+  if (fs.existsSync(gameStateFilePath)) {
+    gameStateContent = fs.readFileSync(gameStateFilePath);
+  }
   debug(`GET GAME STATE: ${gameStateFilePath}`);
-  return fs.readFileSync(gameStateFilePath);
+  return gameStateContent;
 };
 
 module.exports.logGameAction = function logGameAction(actionData) {
@@ -85,6 +88,31 @@ module.exports.getGamesList = function getGamesList() {
     for (let i = 0, count = allGames.length; i < count; i += 1) {
       if (allGames[i].startsWith('gameState')) {
         allGamesData.push(JSON.parse(fs.readFileSync(path.join(gameStateBasePath, allGames[i]))));
+      }
+    }
+  }
+  const returnData = {
+    ActiveGames: allGamesData
+  };
+  debug(`Found ${allGamesData.length} games`);
+  return JSON.stringify(returnData);
+};
+
+module.exports.getGamesListSimple = function getGamesListSimple() {
+  const allGamesData = [];
+  const gameStateBasePath = path.join(global.appRoot, 'gamestates');
+  if (fs.existsSync(gameStateBasePath)) {
+    const allGames = fs.readdirSync(gameStateBasePath);
+    for (let i = 0, count = allGames.length; i < count; i += 1) {
+      if (allGames[i].startsWith('gameState')) {
+        const gameData = JSON.parse(fs.readFileSync(path.join(gameStateBasePath, allGames[i])));
+        const returnData = {
+          gameName: gameData.GameName,
+          playerCount: gameData.Players.length,
+          isLaunched: gameData.IsLaunched,
+          isFinished: gameData.IsFinished
+        };
+        allGamesData.push(returnData);
       }
     }
   }

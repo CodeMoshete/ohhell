@@ -43,9 +43,25 @@ public class MainMenuState : IStateController
 
     public void JoinGame(GameData game, string localPlayerName)
     {
-        Service.WebRequests.SetGameState(game, (response) =>
+        Service.WebRequests.GetGameState(game, (response) =>
         {
-            onJoinGame(game, localPlayerName);
+            if (response != "false")
+            {
+                game = JsonUtility.FromJson<GameData>(response);
+            }
+
+            if (!game.GetHasPlayer(localPlayerName))
+            {
+                PlayerData localPlayer = new PlayerData();
+                localPlayer.IsHost = false;
+                localPlayer.PlayerName = localPlayerName;
+                game.Players.Add(localPlayer);
+            }
+
+            Service.WebRequests.SetGameState(game, (res) =>
+            {
+                onJoinGame(game, localPlayerName);
+            });
         });
     }
 

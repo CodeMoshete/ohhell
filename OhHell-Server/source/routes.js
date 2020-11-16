@@ -22,7 +22,10 @@ router.route('/getGameState')
 router.route('/getGamesList')
   .get(async (req, res) => {
     debug('Getting game state!');
-    const gamesList = gameManager.getGamesList(req.query.gameName);
+    const simple = req.query.simple === 'true';
+    const gamesList = simple
+      ? gameManager.getGamesListSimple(req.query.gameName)
+      : gameManager.getGamesList(req.query.gameName);
     res.send(gamesList);
   });
 
