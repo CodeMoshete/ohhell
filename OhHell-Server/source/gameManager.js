@@ -15,6 +15,56 @@ module.exports.setGameState = function setGameState(gameState) {
   fs.writeFileSync(gameStateFilePath, JSON.stringify(gameState, null, 2));
 };
 
+module.exports.createGame = function createGame(gameState) {
+  const gameStateName = `gameState-${gameState.GameName}`;
+  const gameStateBasePath = path.join(global.appRoot, 'gamestates');
+  const gameStatePath = path.join(gameStateBasePath, gameStateName);
+
+  if (!fs.existsSync(gameStateBasePath)) {
+    fs.mkdirSync(gameStateBasePath, { recursive: true });
+  }
+
+  if (!fs.existsSync(gameStatePath)) {
+    const response = JSON.stringify(gameState, null, 2);
+    fs.writeFileSync(gameStatePath, response);
+    return response;
+  }
+  return false;
+};
+
+module.exports.joinGame = function joinGame(gameName, playerName) {
+  const gameStateName = `gameState-${gameName}`;
+  const gameStatePath = path.join(global.appRoot, 'gamestates', gameStateName);
+  if (fs.existsSync(gameStatePath)) {
+    const gameStateContent = JSON.parse(fs.readFileSync(gameStatePath));
+    const playerList = gameStateContent.Players;
+    let hasPlayer = false;
+    for (let i = 0, count = playerList.length; i < count; i += 1) {
+      if (playerList[i].PlayerName === playerName) {
+        hasPlayer = true;
+        break;
+      }
+    }
+
+    if (!hasPlayer) {
+      playerList.push({
+        PlayerName: playerName,
+        IsHost: false,
+        CurrentHand: [],
+        CurrentBid: 0,
+        CurrentTricks: 0,
+        Bids: [],
+        Tricks: []
+      });
+    }
+
+    const serializedContent = JSON.stringify(gameStateContent, null, 2);
+    fs.writeFileSync(gameStatePath, serializedContent);
+    return serializedContent;
+  }
+  return false;
+};
+
 module.exports.getGameState = function getGameState(gameName) {
   const gameStateName = `gameState-${gameName}`;
   const gameStateBasePath = path.join(global.appRoot, 'gamestates');

@@ -1,5 +1,6 @@
 ﻿using Game.Controllers.Interfaces;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public struct MainMenuLoadParams
@@ -31,7 +32,7 @@ public class MainMenuState : IStateController
         {
             Service.EventManager.AddListener(EventId.RefreshLobby, RefreshLobby);
             LobbyData lobbyData = JsonUtility.FromJson<LobbyData>(response);
-            mainMenuScreen.Initialize(lobbyData, JoinGame);
+            mainMenuScreen.Initialize(lobbyData, JoinGame, CreateGame);
             onLoadedCallback();
         });
     }
@@ -41,9 +42,30 @@ public class MainMenuState : IStateController
         Debug.Log("Main menu loaded!");
     }
 
+    public void CreateGame(string gameName, string playerName)
+    {
+        GameData gameData = new GameData();
+        gameData.GameName = gameName;
+        gameData.Players = new List<PlayerData>();
+
+        PlayerData localPlayer = new PlayerData();
+        localPlayer.IsHost = true;
+        localPlayer.PlayerName = playerName;
+        gameData.Players.Add(localPlayer);
+
+        Service.WebRequests.CreateGame(gameData, (response) =>
+        {
+            if (response != "false")
+            {
+                GameData game = JsonUtility.FromJson<GameData>(response);
+                onJoinGame(game, playerName);
+            }
+        });
+    }
+
     public void JoinGame(GameData game, string localPlayerName)
     {
-        Service.WebRequests.GetGameState(game, (response) =>
+        Service.WebRequests.JoinGame(game, localPlayerName, (response) =>
         {
             if (response != "false")
             {

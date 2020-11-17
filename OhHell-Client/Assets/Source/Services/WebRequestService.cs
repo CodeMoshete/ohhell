@@ -71,6 +71,41 @@ public class WebRequestService
         newRequests.Add(gamesListRequest, onFinished);
     }
 
+    public void CreateGame(GameData game, Action<string> onFinished)
+    {
+        UnityWebRequest setStateRequest = new UnityWebRequest(string.Format("{0}/game/createGame", BASE_ADDRESS));
+        string messageBody = JsonUtility.ToJson(game);
+        setStateRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(messageBody));
+        setStateRequest.downloadHandler = new DownloadHandlerBuffer();
+        setStateRequest.method = UnityWebRequest.kHttpVerbPOST;
+        setStateRequest.SetRequestHeader("Content-Type", "application/json");
+#if UNITY_EDITOR
+        setStateRequest.SetRequestHeader("Accept", "*/*");
+        setStateRequest.SetRequestHeader("Accept-Encoding", "gzip, deflate");
+        setStateRequest.SetRequestHeader("User-Agent", "runscope/0.1");
+#endif
+        setStateRequest.SendWebRequest();
+        newRequests.Add(setStateRequest, onFinished);
+    }
+
+    public void JoinGame(GameData game, string localPlayerName, Action<string> onFinished)
+    {
+        UnityWebRequest setStateRequest = new UnityWebRequest(string.Format("{0}/game/joinGame", BASE_ADDRESS));
+        JoinGameRequest joinRequest = new JoinGameRequest(game.GameName, localPlayerName);
+        string messageBody = JsonUtility.ToJson(joinRequest);
+        setStateRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(messageBody));
+        setStateRequest.downloadHandler = new DownloadHandlerBuffer();
+        setStateRequest.method = UnityWebRequest.kHttpVerbPOST;
+        setStateRequest.SetRequestHeader("Content-Type", "application/json");
+#if UNITY_EDITOR
+        setStateRequest.SetRequestHeader("Accept", "*/*");
+        setStateRequest.SetRequestHeader("Accept-Encoding", "gzip, deflate");
+        setStateRequest.SetRequestHeader("User-Agent", "runscope/0.1");
+#endif
+        setStateRequest.SendWebRequest();
+        newRequests.Add(setStateRequest, onFinished);
+    }
+
     public void SetGameState(GameData game, Action<string> onFinished)
     {
         UnityWebRequest setStateRequest = new UnityWebRequest(string.Format("{0}/game/setGameState", BASE_ADDRESS));

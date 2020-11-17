@@ -5,11 +5,25 @@ const gameManager = require('./gameManager.js');
 
 const router = express.Router();
 
+router.route('/createGame')
+  .post(async (req, res) => {
+    debug(`Creating gamestate!\n${util.inspect(req.body)}`);
+    const result = await gameManager.createGame(req.body);
+    res.send(result);
+  });
+
 router.route('/setGameState')
   .post(async (req, res) => {
     debug(`Setting gamestate!\n${util.inspect(req.body)}`);
-    gameManager.setGameState(req.body);
+    await gameManager.setGameState(req.body);
     res.sendStatus(200);
+  });
+
+router.route('/joinGame')
+  .post(async (req, res) => {
+    debug(`Joining game!\n${req.body}`);
+    const result = await gameManager.joinGame(req.body.GameName, req.body.PlayerName);
+    res.send(result);
   });
 
 router.route('/getGameState')
