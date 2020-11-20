@@ -254,6 +254,12 @@ public class OhHellGameState : IStateController
             turnAction.PlayerIndex = gameData.Players.IndexOf(localPlayer);
             gameScreen.CardPlayed();
             Service.WebRequests.SendGameAction(gameData, turnAction, (response) => {});
+            CurrentSelectedCard = null;
+        }
+        else if (CurrentSelectedCard == null)
+        {
+            string msg = "Select a card to play before clicking the submit button.";
+            Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
         }
         return false;
     }
@@ -295,7 +301,6 @@ public class OhHellGameState : IStateController
 
         gameData.CurrentLeaderIndex = gameData.Players.IndexOf(gameData.TurnLeader);
         gameData.CurrentPlayerTurnIndex = gameData.CurrentLeaderIndex;
-        //gameScreen.SyncGameState(gameData, localPlayer);
         gameData.ClearTable();
 
         Service.TimerManager.CreateTimer(5f, (timerCookie) =>
