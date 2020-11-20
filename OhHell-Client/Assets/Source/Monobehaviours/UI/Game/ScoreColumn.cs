@@ -12,11 +12,11 @@ public class ScoreColumn : MonoBehaviour
         Rounds = new List<ScoreCell>();
     }
 
-    public void SetPlayerScore(PlayerData player)
+    public void SetPlayerScore(PlayerData player, int roundNumber)
     {
         PlayerName.text = player.PlayerName;
         int cumulativeScore = 0;
-        for (int i = 0, count = player.Bids.Count; i < count; ++i)
+        for (int i = 0; i < roundNumber; ++i)
         {
             GameObject newCellObj =
                 GameObject.Instantiate(Resources.Load<GameObject>("Scoring/ScoreField"), transform);

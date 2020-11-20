@@ -21,7 +21,7 @@ public class ScorePopup : MonoBehaviour
             GameObject newColumnObj = 
                 GameObject.Instantiate(Resources.Load<GameObject>("Scoring/ScoreContainer"), ScoreContainer);
             ScoreColumn newColumn = newColumnObj.GetComponent<ScoreColumn>();
-            newColumn.SetPlayerScore(currentPlayer);
+            newColumn.SetPlayerScore(currentPlayer, gameData.CurrentRoundNumber);
             Columns.Add(newColumn);
         }
         gameObject.SetActive(true);

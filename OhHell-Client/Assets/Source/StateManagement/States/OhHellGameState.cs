@@ -335,13 +335,17 @@ public class OhHellGameState : IStateController
         }
 
         bool isGameOver = gameData.CurrentRoundNumber >= 12;
+        if (!isGameOver)
+        {
+            gameData.CurrentRoundNumber++;
+        }
+
         gameScreen.HideHandresult();
         gameScreen.ShowRoundResult(gameData, isGameOver);
         if (localPlayer.IsHost)
         {
             if (!isGameOver)
             {
-                gameData.CurrentRoundNumber++;
                 DealCards();
                 Service.WebRequests.SetGameState(gameData, (response) =>
                 {
