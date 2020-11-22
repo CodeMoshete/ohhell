@@ -10,6 +10,7 @@ public class BidPlacerPopup : MonoBehaviour
     public GameObject LeadNotification;
 
     private int bidIndex;
+    private bool bidPlaced;
 
     private void Start()
     {
@@ -23,6 +24,7 @@ public class BidPlacerPopup : MonoBehaviour
 
     public void ShowBidPopup(GameData gameData, PlayerData player)
     {
+        bidPlaced = false;
         int maxBid = gameData.NumCardsToDeal;
         for (int i = 0, count = BidButtons.Count; i < count; ++i)
         {
@@ -39,16 +41,20 @@ public class BidPlacerPopup : MonoBehaviour
     private void OnBidButtonClicked(Button clickedButton)
     {
         Debug.Log(clickedButton.name);
-        for (int i = 0, count = BidButtons.Count; i < count; ++i)
+        if (!bidPlaced)
         {
-            Button thisButton = BidButtons[i];
-            thisButton.interactable = thisButton != clickedButton;
-            bidIndex = thisButton == clickedButton ? i : bidIndex;
+            for (int i = 0, count = BidButtons.Count; i < count; ++i)
+            {
+                Button thisButton = BidButtons[i];
+                thisButton.interactable = thisButton != clickedButton;
+                bidIndex = thisButton == clickedButton ? i : bidIndex;
+            }
         }
     }
 
     private void OnSubmitClicked()
     {
+        bidPlaced = true;
         Service.EventManager.SendEvent(EventId.LocalBidPlaced, bidIndex);
         BidPlacedText.SetActive(true);
         LeadNotification.SetActive(false);
