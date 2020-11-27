@@ -6,29 +6,30 @@ using UnityEngine.UI;
 public class MainMenuScreen : MonoBehaviour
 {
     public Transform GameListPanel;
-    public InputField NameField;
-    public InputField NewGameNameField;
     public Button NewGameButton;
-    public Button RefreshButton;
+
+    public JoinGamePopup JoinGamePopup;
+    public CreateGamePopup CreateGamePopup;
 
     private LobbyData currentLobbyData;
-    private Action<GameData, string> onJoinGame;
+    private Action<string, string> onJoinGame;
     private Action<string, string> onCreateGame;
     private List<GameListItem> activeGamesList;
 
     public void Initialize(
         LobbyData lobbyData, 
-        Action<GameData, string> onJoinGamePressed,
+        Action<string, string> onJoinGamePressed,
         Action<string, string> onCreateGamePressed)
     {
         onJoinGame = onJoinGamePressed;
         onCreateGame = onCreateGamePressed;
         activeGamesList = new List<GameListItem>();
 
-        RefreshLobbyContent(lobbyData);
+        CreateGamePopup.Initialize(OnNewGameCreated);
+        JoinGamePopup.Initialize(OnGameJoined);
 
+        RefreshLobbyContent(lobbyData);
         NewGameButton.onClick.AddListener(OnNewGamePressed);
-        RefreshButton.onClick.AddListener(RefreshLobbyPressed);
 
         //GameData gameData = new GameData();
         //gameData.GameName = NewGameNameField.text;
@@ -54,24 +55,22 @@ public class MainMenuScreen : MonoBehaviour
 
     private void OnNewGamePressed()
     {
-        if (NewGameNameField.text != string.Empty && NameField.text != string.Empty)
-        {
-            onCreateGame(NewGameNameField.text, NameField.text);
-        }
+        CreateGamePopup.ShowPopup();
     }
 
-    private void RefreshLobbyPressed()
+    private void OnNewGameCreated(string gameName, string playerName)
     {
-        Service.EventManager.SendEvent(EventId.RefreshLobby, null);
+        onCreateGame(gameName, playerName);
     }
 
     private void OnJoinGame(GameData gameData)
     {
-        string playerName = NameField.text;
-        if (playerName != string.Empty)
-        {
-            onJoinGame(gameData, playerName);
-        }
+        JoinGamePopup.ShowPopup(gameData.GameName);
+    }
+
+    private void OnGameJoined(string gameName, string playerName)
+    {
+        onJoinGame(gameName, playerName);
     }
 
     public void RefreshLobbyContent(LobbyData lobbyData)
@@ -86,7 +85,7 @@ public class MainMenuScreen : MonoBehaviour
         for (int i = 0, numGames = currentLobbyData.ActiveGames.Count; i < numGames; ++i)
         {
             GameData gameData = currentLobbyData.ActiveGames[i];
-            if (!gameData.IsLaunched || gameData.IsLaunched && gameData.GetHasPlayer(NameField.text))
+            if (!gameData.IsLaunched)
             {
                 GameObject gameListItemObj = GameObject.Instantiate(Resources.Load<GameObject>("GameListItem"), GameListPanel);
                 GameListItem listItem = gameListItemObj.GetComponent<GameListItem>();

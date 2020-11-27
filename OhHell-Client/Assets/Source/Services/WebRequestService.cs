@@ -58,7 +58,16 @@ public class WebRequestService
 
     public void GetGamesList(Action<string> onFinished)
     {
-        UnityWebRequest gamesListRequest = UnityWebRequest.Get(string.Format("{0}/game/getGamesList", BASE_ADDRESS));
+        UnityWebRequest gamesListRequest = 
+            UnityWebRequest.Get(string.Format("{0}/game/getGamesList", BASE_ADDRESS));
+        gamesListRequest.SendWebRequest();
+        newRequests.Add(gamesListRequest, onFinished);
+    }
+
+    public void GetGamesListSimple(Action<string> onFinished)
+    {
+        UnityWebRequest gamesListRequest = 
+            UnityWebRequest.Get(string.Format("{0}/game/getGamesList?simple=true", BASE_ADDRESS));
         gamesListRequest.SendWebRequest();
         newRequests.Add(gamesListRequest, onFinished);
     }
@@ -88,10 +97,10 @@ public class WebRequestService
         newRequests.Add(setStateRequest, onFinished);
     }
 
-    public void JoinGame(GameData game, string localPlayerName, Action<string> onFinished)
+    public void JoinGame(string gameName, string localPlayerName, Action<string> onFinished)
     {
         UnityWebRequest setStateRequest = new UnityWebRequest(string.Format("{0}/game/joinGame", BASE_ADDRESS));
-        JoinGameRequest joinRequest = new JoinGameRequest(game.GameName, localPlayerName);
+        JoinGameRequest joinRequest = new JoinGameRequest(gameName, localPlayerName);
         string messageBody = JsonUtility.ToJson(joinRequest);
         setStateRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(messageBody));
         setStateRequest.downloadHandler = new DownloadHandlerBuffer();

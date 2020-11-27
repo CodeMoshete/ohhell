@@ -2,7 +2,6 @@
 
 public enum EventId
 {
-    RefreshLobby,
     RoundBegun,
     RemoteCardPlayed,
     RemoteTurnEnded,

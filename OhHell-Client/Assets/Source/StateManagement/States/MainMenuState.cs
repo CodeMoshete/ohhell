@@ -15,9 +15,12 @@ public struct MainMenuLoadParams
 
 public class MainMenuState : IStateController
 {
+    private const float REFRESH_TIME = 5f;
+
     private GameObject mainMenuUi;
     private MainMenuScreen mainMenuScreen;
     private Action<GameData, string> onJoinGame;
+    private bool didJoinGame = false;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
@@ -30,7 +33,6 @@ public class MainMenuState : IStateController
 
         Service.WebRequests.GetGamesList((response) =>
         {
-            Service.EventManager.AddListener(EventId.RefreshLobby, RefreshLobby);
             LobbyData lobbyData = JsonUtility.FromJson<LobbyData>(response);
             mainMenuScreen.Initialize(lobbyData, JoinGame, CreateGame);
             onLoadedCallback();
@@ -40,6 +42,7 @@ public class MainMenuState : IStateController
     public void Start()
     {
         Debug.Log("Main menu loaded!");
+        RefreshLobby(null);
     }
 
     public void CreateGame(string gameName, string playerName)
@@ -57,20 +60,23 @@ public class MainMenuState : IStateController
         {
             if (response != "false")
             {
+                didJoinGame = true;
                 GameData game = JsonUtility.FromJson<GameData>(response);
                 onJoinGame(game, playerName);
             }
         });
     }
 
-    public void JoinGame(GameData game, string localPlayerName)
+    public void JoinGame(string gameName, string localPlayerName)
     {
-        Service.WebRequests.JoinGame(game, localPlayerName, (response) =>
+        Service.WebRequests.JoinGame(gameName, localPlayerName, (response) =>
         {
-            if (response != "false")
+            if (response == "false")
             {
-                game = JsonUtility.FromJson<GameData>(response);
+                return;
             }
+
+            GameData game = JsonUtility.FromJson<GameData>(response);
 
             if (!game.GetHasPlayer(localPlayerName))
             {
@@ -82,19 +88,24 @@ public class MainMenuState : IStateController
 
             Service.WebRequests.SetGameState(game, (res) =>
             {
+                didJoinGame = true;
                 onJoinGame(game, localPlayerName);
             });
         });
     }
 
-    private bool RefreshLobby(object cookie)
+    private void RefreshLobby(object cookie)
     {
-        Service.WebRequests.GetGamesList((response) =>
+        if (!didJoinGame)
         {
-            LobbyData lobbyData = JsonUtility.FromJson<LobbyData>(response);
-            mainMenuScreen.RefreshLobbyContent(lobbyData);
-        });
-        return true;
+            Service.WebRequests.GetGamesList((response) =>
+            {
+                Debug.Log("Lobby data refreshed");
+                LobbyData lobbyData = JsonUtility.FromJson<LobbyData>(response);
+                mainMenuScreen.RefreshLobbyContent(lobbyData);
+                Service.TimerManager.CreateTimer(REFRESH_TIME, RefreshLobby, null);
+            });
+        }
     }
 
     public void Unload()
