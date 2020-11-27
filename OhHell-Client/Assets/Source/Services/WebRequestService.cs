@@ -59,14 +59,6 @@ public class WebRequestService
     public void GetGamesList(Action<string> onFinished)
     {
         UnityWebRequest gamesListRequest = 
-            UnityWebRequest.Get(string.Format("{0}/game/getGamesList", BASE_ADDRESS));
-        gamesListRequest.SendWebRequest();
-        newRequests.Add(gamesListRequest, onFinished);
-    }
-
-    public void GetGamesListSimple(Action<string> onFinished)
-    {
-        UnityWebRequest gamesListRequest = 
             UnityWebRequest.Get(string.Format("{0}/game/getGamesList?simple=true", BASE_ADDRESS));
         gamesListRequest.SendWebRequest();
         newRequests.Add(gamesListRequest, onFinished);

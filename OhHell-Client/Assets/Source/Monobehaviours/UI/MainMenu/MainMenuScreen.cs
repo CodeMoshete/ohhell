@@ -63,9 +63,9 @@ public class MainMenuScreen : MonoBehaviour
         onCreateGame(gameName, playerName);
     }
 
-    private void OnJoinGame(GameData gameData)
+    private void OnJoinGame(GameDataSimple gameData)
     {
-        JoinGamePopup.ShowPopup(gameData.GameName);
+        JoinGamePopup.ShowPopup(gameData.gameName);
     }
 
     private void OnGameJoined(string gameName, string playerName)
@@ -84,8 +84,8 @@ public class MainMenuScreen : MonoBehaviour
         currentLobbyData = lobbyData;
         for (int i = 0, numGames = currentLobbyData.ActiveGames.Count; i < numGames; ++i)
         {
-            GameData gameData = currentLobbyData.ActiveGames[i];
-            if (!gameData.IsLaunched)
+            GameDataSimple gameData = currentLobbyData.ActiveGames[i];
+            if (!gameData.isLaunched)
             {
                 GameObject gameListItemObj = GameObject.Instantiate(Resources.Load<GameObject>("GameListItem"), GameListPanel);
                 GameListItem listItem = gameListItemObj.GetComponent<GameListItem>();

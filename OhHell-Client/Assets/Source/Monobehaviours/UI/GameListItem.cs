@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,14 +8,14 @@ public class GameListItem : MonoBehaviour
     public Text NumPlayersField;
     public Button JoinGameButton;
 
-    private GameData gameData;
-    private Action<GameData> onJoinGamePressed;
+    private GameDataSimple gameData;
+    private Action<GameDataSimple> onJoinGamePressed;
 
-    public void Initialize(GameData targetGameData, Action<GameData> onJoinGame)
+    public void Initialize(GameDataSimple targetGameData, Action<GameDataSimple> onJoinGame)
     {
         gameData = targetGameData;
-        GameNameField.text = gameData.GameName;
-        NumPlayersField.text = gameData.Players.Count.ToString();
+        GameNameField.text = gameData.gameName;
+        NumPlayersField.text = gameData.playerCount.ToString();
         onJoinGamePressed = onJoinGame;
         JoinGameButton.onClick.AddListener(JoinGame);
     }

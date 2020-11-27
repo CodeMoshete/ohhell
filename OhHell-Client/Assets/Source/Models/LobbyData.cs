@@ -4,5 +4,5 @@ using System.Collections.Generic;
 [Serializable]
 public class LobbyData
 {
-    public List<GameData> ActiveGames;
+    public List<GameDataSimple> ActiveGames;
 }
