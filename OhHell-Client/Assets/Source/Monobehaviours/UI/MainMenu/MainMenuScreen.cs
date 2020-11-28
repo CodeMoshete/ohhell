@@ -9,19 +9,23 @@ public class MainMenuScreen : MonoBehaviour
     public Button NewGameButton;
 
     public JoinGamePopup JoinGamePopup;
+    public JoinGameInProgressPopup JoinGameInProgressPopup;
     public CreateGamePopup CreateGamePopup;
 
     private LobbyData currentLobbyData;
     private Action<string, string> onJoinGame;
+    private Action<GameData, string> onJoinGameInProgress;
     private Action<string, string> onCreateGame;
     private List<GameListItem> activeGamesList;
 
     public void Initialize(
         LobbyData lobbyData, 
         Action<string, string> onJoinGamePressed,
+        Action<GameData, string> onJoinGameInProgressPressed,
         Action<string, string> onCreateGamePressed)
     {
         onJoinGame = onJoinGamePressed;
+        onJoinGameInProgress = onJoinGameInProgressPressed;
         onCreateGame = onCreateGamePressed;
         activeGamesList = new List<GameListItem>();
 
@@ -65,7 +69,23 @@ public class MainMenuScreen : MonoBehaviour
 
     private void OnJoinGame(GameDataSimple gameData)
     {
-        JoinGamePopup.ShowPopup(gameData.gameName);
+        if (gameData.isLaunched)
+        {
+            Service.WebRequests.GetGameState(gameData.gameName, (response) =>
+            {
+                GameData fullGameData = JsonUtility.FromJson<GameData>(response);
+                JoinGameInProgressPopup.ShowPopup(fullGameData, OnInProgressGameJoined);
+            });
+        }
+        else
+        { 
+            JoinGamePopup.ShowPopup(gameData.gameName);
+        }
+    }
+
+    private void OnInProgressGameJoined(GameData data, string playerName)
+    {
+        onJoinGameInProgress(data, playerName);
     }
 
     private void OnGameJoined(string gameName, string playerName)
@@ -85,9 +105,10 @@ public class MainMenuScreen : MonoBehaviour
         for (int i = 0, numGames = currentLobbyData.ActiveGames.Count; i < numGames; ++i)
         {
             GameDataSimple gameData = currentLobbyData.ActiveGames[i];
-            if (!gameData.isLaunched)
+            if (!gameData.isFinished)
             {
-                GameObject gameListItemObj = GameObject.Instantiate(Resources.Load<GameObject>("GameListItem"), GameListPanel);
+                GameObject gameListItemObj = GameObject.Instantiate(
+                    Resources.Load<GameObject>("GameListItem"), GameListPanel);
                 GameListItem listItem = gameListItemObj.GetComponent<GameListItem>();
                 listItem.Initialize(gameData, OnJoinGame);
                 activeGamesList.Add(listItem);

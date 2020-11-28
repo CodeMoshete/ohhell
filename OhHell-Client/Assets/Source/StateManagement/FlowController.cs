@@ -22,7 +22,7 @@ namespace Game.Controllers
 
 		public void LoadMainMenu()
 		{
-            MainMenuLoadParams loadParams = new MainMenuLoadParams(JoinGame);
+            MainMenuLoadParams loadParams = new MainMenuLoadParams(JoinGame, LaunchGame);
 			sceneFactory.LoadScene<MainMenuState>(OnSceneLoaded, loadParams);
 		}
 

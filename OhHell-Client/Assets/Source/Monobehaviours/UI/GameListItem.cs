@@ -7,6 +7,8 @@ public class GameListItem : MonoBehaviour
     public Text GameNameField;
     public Text NumPlayersField;
     public Button JoinGameButton;
+    public GameObject WaitingForPlayersLabel;
+    public GameObject InProgressLabel;
 
     private GameDataSimple gameData;
     private Action<GameDataSimple> onJoinGamePressed;
@@ -18,6 +20,8 @@ public class GameListItem : MonoBehaviour
         NumPlayersField.text = gameData.playerCount.ToString();
         onJoinGamePressed = onJoinGame;
         JoinGameButton.onClick.AddListener(JoinGame);
+        WaitingForPlayersLabel.SetActive(!targetGameData.isLaunched);
+        InProgressLabel.SetActive(targetGameData.isLaunched);
     }
 
     private void JoinGame()

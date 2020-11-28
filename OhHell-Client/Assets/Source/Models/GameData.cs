@@ -8,6 +8,7 @@ public class GameData
     // Room meta properties.
     public string GameName;
     public List<PlayerData> Players;
+    public int CurrentActionIndex;
     public bool IsLaunched;
     public bool IsFinished;
     

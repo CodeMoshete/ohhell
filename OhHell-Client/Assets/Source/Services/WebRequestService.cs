@@ -5,11 +5,11 @@ using UnityEngine.Networking;
 
 public class WebRequestService
 {
-#if UNITY_EDITOR
-    private const string BASE_ADDRESS = "http://localhost:8082";
-#else
+//#if UNITY_EDITOR
+//    private const string BASE_ADDRESS = "http://localhost:8082";
+//#else
     private const string BASE_ADDRESS = "http://18.191.101.1:8082";
-#endif
+//#endif
     private Dictionary<UnityWebRequest, Action<string>> activeRequests;
     private Dictionary<UnityWebRequest, Action<string>> newRequests;
     private List<UnityWebRequest> cleanupRequests;
@@ -66,7 +66,12 @@ public class WebRequestService
 
     public void GetGameState(GameData game, Action<string> onFinished)
     {
-        string url = string.Format("{0}/game/getGameState?gameName={1}", BASE_ADDRESS, game.GameName);
+        GetGameState(game.GameName, onFinished);
+    }
+
+    public void GetGameState(string gameName, Action<string> onFinished)
+    {
+        string url = string.Format("{0}/game/getGameState?gameName={1}", BASE_ADDRESS, gameName);
         UnityWebRequest gamesListRequest = UnityWebRequest.Get(url);
         gamesListRequest.SendWebRequest();
         newRequests.Add(gamesListRequest, onFinished);

@@ -21,6 +21,7 @@ public struct OhHellGameLoadParams
 public class OhHellGameState : IStateController
 {
     private const float GAME_UPDATE_TIME = 3f;
+    private const float HOST_GAME_STATE_SYNC_TIME = 30f;
     private Action onLoaded;
     private GameObject gameUi;
     private GameScreen gameScreen;
@@ -57,13 +58,16 @@ public class OhHellGameState : IStateController
 
         if (gameData.IsLaunched)
         {
+            // Joined a game in progress.
             SyncGameState(() =>
             {
+                seenActionIndex = gameData.CurrentActionIndex;
                 onLoaded();
             });
         }
         else
         {
+            // Joined a newly launched game.
             if (localPlayer.IsHost)
             {
                 gameData.CurrentDealerIndex = gameData.Players.IndexOf(localPlayer);
@@ -95,6 +99,10 @@ public class OhHellGameState : IStateController
         currentPendingActions = new Queue<IGameAction>();
         gameUi.SetActive(true);
         Service.TimerManager.CreateTimer(GAME_UPDATE_TIME, GetGameUpdates, null);
+        if (localPlayer.IsHost)
+        {
+            Service.TimerManager.CreateTimer(HOST_GAME_STATE_SYNC_TIME, UpdateServerGameData, null);
+        }
         gameScreen.SyncGameState(gameData, localPlayer);
         Service.EventManager.AddListener(EventId.CardSelected, OnCardSelected);
         Service.EventManager.AddListener(EventId.PlayCardPressed, OnLocalCardPlayed);
@@ -195,6 +203,7 @@ public class OhHellGameState : IStateController
             IGameAction nextAction = currentPendingActions.Dequeue();
             Debug.Log("EXECUTE ACTION: " + nextAction.ActionType);
             nextAction.ExecuteAction(InvokeNextAction);
+            gameData.CurrentActionIndex++;
         }
     }
 
@@ -271,16 +280,17 @@ public class OhHellGameState : IStateController
         turnPlayer.PlayCardFromHand(turn.CardPlayed);
 
         gameData.IncrementTurnCounter();
+        Debug.Log("Processed player turn: " + turnPlayer.PlayerName + ", new index: " + gameData.CurrentPlayerTurnIndex);
         PlayerData nextPlayer = gameData.Players[gameData.CurrentPlayerTurnIndex];
 
         if (nextPlayer.PlayerName == 
             gameData.Players[gameData.CurrentLeaderIndex].PlayerName)
         {
             gameScreen.SetHighCard(gameData);
-            Debug.Log("End of turns!");
             // Award trick.
-            if (localPlayer.IsHost)
+            if (localPlayer.IsHost && currentPendingActions.Peek() == null)
             {
+                Debug.Log("End of turns!");
                 // Start next table turn.
                 TableTurnEndAction turnEndAction = new TableTurnEndAction();
                 turnEndAction.IsEndOfTurn = true;
@@ -342,7 +352,7 @@ public class OhHellGameState : IStateController
 
         gameScreen.HideHandresult();
         gameScreen.ShowRoundResult(gameData, isGameOver);
-        if (localPlayer.IsHost)
+        if (localPlayer.IsHost && currentPendingActions.Peek() == null)
         {
             if (!isGameOver)
             {
@@ -371,6 +381,16 @@ public class OhHellGameState : IStateController
     private bool OnGameEnded(object cookie)
     {
         return false;
+    }
+
+    private void UpdateServerGameData(object cookie)
+    {
+        if (!gameData.IsFinished)
+        {
+            Debug.Log("Host - Syncing current game state to server.");
+            Service.WebRequests.SetGameState(gameData, (response) => {});
+            Service.TimerManager.CreateTimer(HOST_GAME_STATE_SYNC_TIME, UpdateServerGameData, null);
+        }
     }
 
     public void Unload()

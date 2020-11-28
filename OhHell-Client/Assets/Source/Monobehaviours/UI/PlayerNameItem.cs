@@ -1,10 +1,22 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerNameItem : MonoBehaviour
 {
     public Text NameField;
     public Text TrickField;
+    public Button JoinButton;
+
+    private Action<string> onJoinAsPlayer;
+
+    public void SetName(string name, Action<string> onJoinAsPlayer)
+    {
+        SetName(name);
+        this.onJoinAsPlayer = onJoinAsPlayer;
+        JoinButton.onClick.AddListener(OnJoinAsPlayer);
+        JoinButton.gameObject.SetActive(true);
+    }
 
     public void SetName(string name)
     {
@@ -25,6 +37,14 @@ public class PlayerNameItem : MonoBehaviour
         else
         {
             TrickField.text = string.Empty;
+        }
+    }
+
+    private void OnJoinAsPlayer()
+    {
+        if (onJoinAsPlayer != null)
+        {
+            onJoinAsPlayer(NameField.text);
         }
     }
 }

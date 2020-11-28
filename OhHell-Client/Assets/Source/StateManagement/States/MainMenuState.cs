@@ -6,10 +6,14 @@ using UnityEngine;
 public struct MainMenuLoadParams
 {
     public Action<GameData, string> OnJoinGame;
+    public Action<GameData, string> OnLaunchGame;
 
-    public MainMenuLoadParams(Action<GameData, string> onJoinGame)
+    public MainMenuLoadParams(
+        Action<GameData, string> onJoinGame, 
+        Action<GameData, string> onLaunchGame)
     {
         OnJoinGame = onJoinGame;
+        OnLaunchGame = onLaunchGame;
     }
 }
 
@@ -20,12 +24,14 @@ public class MainMenuState : IStateController
     private GameObject mainMenuUi;
     private MainMenuScreen mainMenuScreen;
     private Action<GameData, string> onJoinGame;
-    private bool didJoinGame = false;
+    private Action<GameData, string> launchGame;
+    private bool didJoinGame;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
         MainMenuLoadParams loadParams = (MainMenuLoadParams)passedParams;
         onJoinGame = loadParams.OnJoinGame;
+        launchGame = loadParams.OnLaunchGame;
 
         Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
         mainMenuUi = GameObject.Instantiate(Resources.Load<GameObject>("MainMenu"), gameUiLayer);
@@ -34,7 +40,7 @@ public class MainMenuState : IStateController
         Service.WebRequests.GetGamesList((response) =>
         {
             LobbyData lobbyData = JsonUtility.FromJson<LobbyData>(response);
-            mainMenuScreen.Initialize(lobbyData, JoinGame, CreateGame);
+            mainMenuScreen.Initialize(lobbyData, JoinGame, JoinGameInProgress, CreateGame);
             onLoadedCallback();
         });
     }
@@ -92,6 +98,12 @@ public class MainMenuState : IStateController
                 onJoinGame(game, localPlayerName);
             });
         });
+    }
+
+    private void JoinGameInProgress(GameData game, string playerName)
+    {
+        didJoinGame = true;
+        launchGame(game, playerName);
     }
 
     private void RefreshLobby(object cookie)
