@@ -28,7 +28,6 @@ public class OhHellGameState : IStateController
     private GameData gameData;
     private PlayerData localPlayer;
 
-    private bool rejoinedGame;
     private int seenActionIndex;
     private Queue<IGameAction> currentPendingActions;
 
@@ -60,7 +59,6 @@ public class OhHellGameState : IStateController
         if (gameData.IsLaunched)
         {
             // Joined a game in progress.
-            rejoinedGame = true;
             SyncGameState(() =>
             {
                 seenActionIndex = gameData.CurrentActionIndex;
@@ -192,14 +190,6 @@ public class OhHellGameState : IStateController
             if (!areActionsRunning && numNewActions > 0)
             {
                 InvokeNextAction();
-            }
-        }
-        else
-        {
-            if (rejoinedGame)
-            {
-                rejoinedGame = false;
-                gameScreen.SyncGameState(gameData, localPlayer);
             }
         }
 

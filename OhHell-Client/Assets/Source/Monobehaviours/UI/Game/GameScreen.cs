@@ -42,7 +42,6 @@ public class GameScreen : MonoBehaviour
     private void Start()
     {
         PlayCardButton.onClick.AddListener(PlayCardPressed);
-        PlayCardButton.gameObject.SetActive(false);
         ScoreSheetButton.onClick.AddListener(() =>
         {
             Service.EventManager.SendEvent(EventId.OnShowScoresClicked, null);
@@ -90,8 +89,8 @@ public class GameScreen : MonoBehaviour
             string.Format("Led Suit: {0}", ledCard.Suit.ToString()) : 
             string.Empty;
 
-        PlayCardButton.gameObject.SetActive(localPlayersTurn);
-        YourTurnNotif.gameObject.SetActive(localPlayersTurn);
+        PlayCardButton.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
+        YourTurnNotif.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
         TurnProcessingNotif.SetActive(false);
     }
 
