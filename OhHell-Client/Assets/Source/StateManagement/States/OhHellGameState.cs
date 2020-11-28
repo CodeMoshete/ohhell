@@ -203,7 +203,7 @@ public class OhHellGameState : IStateController
             IGameAction nextAction = currentPendingActions.Dequeue();
             Debug.Log("EXECUTE ACTION: " + nextAction.ActionType);
             nextAction.ExecuteAction(InvokeNextAction);
-            gameData.CurrentActionIndex++;
+            gameData.CurrentActionIndex = seenActionIndex - currentPendingActions.Count;
         }
     }
 
