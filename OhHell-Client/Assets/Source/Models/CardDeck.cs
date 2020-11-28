@@ -15,7 +15,7 @@ public class CardDeck
         AvailableCards = new List<Card>();
         for (uint k = 0; k < numDecks; ++k)
         {
-            for (uint i = 0; i < NUM_SUITS; ++i)
+            for (uint i = 1; i < NUM_SUITS + 1; ++i)
             {
                 for (uint j = 0; j < NUM_CARDS; ++j)
                 {

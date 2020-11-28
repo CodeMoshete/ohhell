@@ -84,7 +84,12 @@ public class GameScreen : MonoBehaviour
         YourTricks.text = localPlayer.CurrentTricks.ToString();
         bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
         Card ledCard = gameState.Players[gameState.CurrentLeaderIndex].CurrentRoundCard;
-        LedSuitField.text = ledCard != null ? string.Format("Led Suit: {0}", ledCard.Suit.ToString()) : string.Empty;
+
+        LedSuitField.text = 
+            ledCard.Suit != CardSuit.None ? 
+            string.Format("Led Suit: {0}", ledCard.Suit.ToString()) : 
+            string.Empty;
+
         PlayCardButton.gameObject.SetActive(localPlayersTurn);
         YourTurnNotif.gameObject.SetActive(localPlayersTurn);
         TurnProcessingNotif.SetActive(false);

@@ -2,6 +2,7 @@
 
 public enum CardSuit
 {
+    None,
     Hearts,
     Diamonds,
     Clubs,
@@ -11,10 +12,13 @@ public enum CardSuit
 [Serializable]
 public class Card
 {
-    // 0 = Hearts
-    // 1 = Diamonds
-    // 2 = Clubs
-    // 3 = Spades
+    public static Card DefaultCard = new Card(CardSuit.None, 0);
+
+    // 0 = None
+    // 1 = Hearts
+    // 2 = Diamonds
+    // 3 = Clubs
+    // 4 = Spades
     public uint IntSuit;
     public CardSuit Suit
     {

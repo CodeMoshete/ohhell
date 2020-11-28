@@ -288,7 +288,7 @@ public class OhHellGameState : IStateController
         {
             gameScreen.SetHighCard(gameData);
             // Award trick.
-            if (localPlayer.IsHost && currentPendingActions.Peek() == null)
+            if (localPlayer.IsHost && currentPendingActions.Count == 0)
             {
                 Debug.Log("End of turns!");
                 // Start next table turn.
@@ -352,7 +352,7 @@ public class OhHellGameState : IStateController
 
         gameScreen.HideHandresult();
         gameScreen.ShowRoundResult(gameData, isGameOver);
-        if (localPlayer.IsHost && currentPendingActions.Peek() == null)
+        if (localPlayer.IsHost && currentPendingActions.Count == 0)
         {
             if (!isGameOver)
             {

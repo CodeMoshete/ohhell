@@ -68,7 +68,7 @@ public class GameData
         for (int i = 0, count = Players.Count; i < count; ++i)
         {
             PlayerData currentPlayer = Players[i];
-            currentPlayer.CurrentRoundCard = null;
+            currentPlayer.CurrentRoundCard = Card.DefaultCard;
         }
     }
 
@@ -133,7 +133,7 @@ public class GameData
             while (playerIndex != -1 && playerIndex != CurrentPlayerTurnIndex)
             {
                 PlayerData testPlayer = Players[playerIndex];
-                if (testPlayer != turnLeader && testPlayer.CurrentRoundCard != null)
+                if (testPlayer != turnLeader && testPlayer.CurrentRoundCard.Suit != CardSuit.None)
                 {
                     lastPlayer = testPlayer;
                 }
@@ -158,7 +158,7 @@ public class GameData
             }
         }
 
-        if (ledCard != null)
+        if (ledCard.Suit != CardSuit.None)
         {
             // This is not the leading card.
             bool isLedSuit = card.Suit == ledCard.Suit;
@@ -219,7 +219,7 @@ public class GameData
                 if (highCard == null)
                 {
                     // First card compared.
-                    if (player.CurrentRoundCard != null)
+                    if (player.CurrentRoundCard.Suit != CardSuit.None)
                     {
                         highCard = player.CurrentRoundCard;
                         currentPlayerLeader = player;
@@ -227,7 +227,7 @@ public class GameData
                 }
                 else
                 {
-                    if (player.CurrentRoundCard != null)
+                    if (player.CurrentRoundCard.Suit != CardSuit.None)
                     {
                         Card currentPlayerCard = player.CurrentRoundCard;
                         // Ace of trump.

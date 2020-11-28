@@ -49,7 +49,7 @@ public class CardView : MonoBehaviour
 
         for (int i = 0, count = SuitSymbols.Count; i < count; ++i)
         {
-            SuitSymbols[i].sprite = SuitTextures[(int)card.IntSuit];
+            SuitSymbols[i].sprite = SuitTextures[(int)card.IntSuit - 1];
         }
 
         CardData = card;
