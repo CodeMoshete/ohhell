@@ -32,14 +32,14 @@ public class WebRequestService
 
         foreach (KeyValuePair<UnityWebRequest, Action<string>> pair in activeRequests)
         {
-            if (pair.Key.isDone)
-            {
-                pair.Value(pair.Key.downloadHandler.text);
-                cleanupRequests.Add(pair.Key);
-            }
-            else if (pair.Key.isNetworkError)
+            if (pair.Key.isNetworkError || pair.Key.isHttpError)
             {
                 Debug.LogError(pair.Key.error);
+                cleanupRequests.Add(pair.Key);
+            }
+            else if (pair.Key.isDone)
+            {
+                pair.Value(pair.Key.downloadHandler.text);
                 cleanupRequests.Add(pair.Key);
             }
         }

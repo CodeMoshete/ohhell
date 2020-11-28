@@ -6,12 +6,7 @@ public class PlayerData
 {
     public string PlayerName;
     public bool IsHost;
-    private Card test;
-    public Card CurrentRoundCard
-    {
-        get { return test; }
-        set { test = value; }
-    }
+    public Card CurrentRoundCard;
     public List<Card> CurrentHand;
     public int CurrentBid;
     public int CurrentTricks;
