@@ -28,6 +28,7 @@ public class OhHellGameState : IStateController
     private GameData gameData;
     private PlayerData localPlayer;
 
+    private bool rejoinedGame;
     private int seenActionIndex;
     private Queue<IGameAction> currentPendingActions;
 
@@ -59,6 +60,7 @@ public class OhHellGameState : IStateController
         if (gameData.IsLaunched)
         {
             // Joined a game in progress.
+            rejoinedGame = true;
             SyncGameState(() =>
             {
                 seenActionIndex = gameData.CurrentActionIndex;
@@ -175,19 +177,30 @@ public class OhHellGameState : IStateController
         List<IGameAction> newActions = actions.GetGameActionsFromRecord();
         int numNewActions = newActions.Count;
 
-        seenActionIndex = actions.ActionIndex;
-        bool areActionsRunning = currentPendingActions.Count > 0;
         bool keepListening = true;
-        for (int i = 0; i < numNewActions; ++i)
+        if (numNewActions > 0)
         {
-            Debug.Log("ENQUEUE ACTION: " + newActions[i].ActionType);
-            currentPendingActions.Enqueue(newActions[i]);
-            keepListening = newActions[i].ActionType != "TableGameEndAction";
-        }
+            seenActionIndex = actions.ActionIndex;
+            bool areActionsRunning = currentPendingActions.Count > 0;
+            for (int i = 0; i < numNewActions; ++i)
+            {
+                Debug.Log("ENQUEUE ACTION: " + newActions[i].ActionType);
+                currentPendingActions.Enqueue(newActions[i]);
+                keepListening = newActions[i].ActionType != "TableGameEndAction";
+            }
 
-        if (!areActionsRunning && numNewActions > 0)
+            if (!areActionsRunning && numNewActions > 0)
+            {
+                InvokeNextAction();
+            }
+        }
+        else
         {
-            InvokeNextAction();
+            if (rejoinedGame)
+            {
+                rejoinedGame = false;
+                gameScreen.SyncGameState(gameData, localPlayer);
+            }
         }
 
         if (keepListening)
