@@ -8,6 +8,9 @@ public class JoinGamePopup : MonoBehaviour
     public Button JoinButton;
     public Button CancelButton;
     public Button NameKeyboardButton;
+    public Transform KeyboardPositioner;
+    public Transform UIContainer;
+    public VirtualKeyboard Keyboard;
 
     private Action<string, string> onJoin;
     private string gameName;
@@ -16,6 +19,7 @@ public class JoinGamePopup : MonoBehaviour
     {
         JoinButton.onClick.AddListener(OnJoinButtonClicked);
         CancelButton.onClick.AddListener(OnCancelButtonClicked);
+        NameKeyboardButton.onClick.AddListener(OnShowKeyboardPressed);
     }
 
     public void Initialize(Action<string, string> onJoin)
@@ -27,6 +31,17 @@ public class JoinGamePopup : MonoBehaviour
     {
         this.gameName = gameName;
         gameObject.SetActive(true);
+    }
+
+    private void OnShowKeyboardPressed()
+    {
+        Keyboard.ShowKeyboard(PlayerNameField, OnKeyboardHidden);
+        UIContainer.position = KeyboardPositioner.position;
+    }
+
+    private void OnKeyboardHidden()
+    {
+        UIContainer.localPosition = Vector3.zero;
     }
 
     private void OnJoinButtonClicked()
