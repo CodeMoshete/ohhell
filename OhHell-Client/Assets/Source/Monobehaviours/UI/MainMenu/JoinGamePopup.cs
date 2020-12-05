@@ -7,6 +7,7 @@ public class JoinGamePopup : MonoBehaviour
     public InputField PlayerNameField;
     public Button JoinButton;
     public Button CancelButton;
+    public Button NameKeyboardButton;
 
     private Action<string, string> onJoin;
     private string gameName;

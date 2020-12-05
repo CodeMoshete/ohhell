@@ -8,6 +8,8 @@ public class CreateGamePopup : MonoBehaviour
     public InputField PlayerNameField;
     public Button CreateButton;
     public Button CancelButton;
+    public Button NameKeyboardButton;
+    public Button GameNameKeyboardButton;
 
     private Action<string, string> onCreate;
 
