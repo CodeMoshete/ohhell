@@ -55,6 +55,11 @@ public class CardView : MonoBehaviour
         CardData = card;
     }
 
+    public void SetEnabled(bool enabled)
+    {
+        buttonBehavior.interactable = enabled;
+    }
+
     public static CardView CreateFromModel(Card card, Transform parent, bool isPlayerCard = false)
     {
         GameObject newCard = GameObject.Instantiate(
