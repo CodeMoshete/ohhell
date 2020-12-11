@@ -267,6 +267,7 @@ public class OhHellGameState : IStateController
             gameScreen.CardPlayed();
             Service.WebRequests.SendGameAction(gameData, turnAction, (response) => {});
             CurrentSelectedCard = null;
+            gameScreen.DisableHand();
         }
         else if (CurrentSelectedCard == null)
         {

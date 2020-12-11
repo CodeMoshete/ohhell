@@ -63,11 +63,15 @@ public class GameScreen : MonoBehaviour
 
     private void PlayCardPressed()
     {
+        Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
+    }
+
+    public void DisableHand()
+    {
         for (int i = 0, count = playerHand.Count; i < count; ++i)
         {
             playerHand[i].SetEnabled(false);
         }
-        Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
     }
 
     public void CardPlayed()
