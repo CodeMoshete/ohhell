@@ -176,6 +176,7 @@ public class GameScreen : MonoBehaviour
             nameItem.SetName(player.PlayerName);
             nameItem.SetNumTricks(player);
             nameItem.SetTurnHighlight(gameState.CurrentPlayerTurnIndex == gameState.Players.IndexOf(player));
+            nameItem.SetLeaderHighlight(gameState.CurrentLeaderIndex == gameState.Players.IndexOf(player));
             playerList.Add(nameItem);
         }
     }

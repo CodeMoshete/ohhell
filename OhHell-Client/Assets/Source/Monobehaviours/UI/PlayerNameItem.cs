@@ -4,9 +4,13 @@ using UnityEngine.UI;
 
 public class PlayerNameItem : MonoBehaviour
 {
+    private const float TRICKS_TEXT_Y = -24.4f;
+    private const float TRICKS_TEXT_Y_SHIFT = -17.65f;
+
     public Text NameField;
     public Text TrickField;
     public Button JoinButton;
+    public GameObject LeaderNotification;
 
     private Action<string> onJoinAsPlayer;
 
@@ -26,6 +30,14 @@ public class PlayerNameItem : MonoBehaviour
     public void SetTurnHighlight(bool isTurn)
     {
         NameField.color = isTurn ? Color.red : Color.black;
+    }
+
+    public void SetLeaderHighlight(bool isLeader)
+    {
+        LeaderNotification.SetActive(isLeader);
+        Vector3 trickFieldPos = TrickField.rectTransform.anchoredPosition;
+        trickFieldPos.y = isLeader ? TRICKS_TEXT_Y_SHIFT : TRICKS_TEXT_Y;
+        TrickField.rectTransform.anchoredPosition = trickFieldPos;
     }
 
     public void SetNumTricks(PlayerData playerData)
