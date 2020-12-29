@@ -90,6 +90,14 @@ module.exports.logGameAction = function logGameAction(actionData) {
   if (fs.existsSync(gameActionFilePath)) {
     actionContent = JSON.parse(fs.readFileSync(gameActionFilePath));
   }
+
+  const enforcedIndex = actionData.EnforceIndex;
+  const currentIndex = actionContent.length;
+  if (enforcedIndex >= 0 && currentIndex !== enforcedIndex) {
+    debug(`Current action index ${currentIndex} does not equal enforced index ${enforcedIndex}`);
+    return;
+  }
+
   actionContent.push(actionData);
 
   debug(`LOG GAME ACTION: ${gameActionFilePath}`);

@@ -5,11 +5,11 @@ using UnityEngine.Networking;
 
 public class WebRequestService
 {
-//#if UNITY_EDITOR
-//    private const string BASE_ADDRESS = "http://localhost:8082";
-//#else
-    private const string BASE_ADDRESS = "http://18.191.101.1:8082";
-//#endif
+    //#if UNITY_EDITOR
+    private const string BASE_ADDRESS = "http://localhost:8082";
+    //#else
+    //private const string BASE_ADDRESS = "http://18.191.101.1:8082";
+    //#endif
     private Dictionary<UnityWebRequest, Action<string>> activeRequests;
     private Dictionary<UnityWebRequest, Action<string>> newRequests;
     private List<UnityWebRequest> cleanupRequests;
@@ -129,10 +129,10 @@ public class WebRequestService
         newRequests.Add(setStateRequest, onFinished);
     }
 
-    public void SendGameAction(GameData gameData, IGameAction gameAction, Action<string> onFinished)
+    public void SendGameAction(GameData gameData, IGameAction gameAction, Action<string> onFinished, int enforceIndex = -1)
     {
         UnityWebRequest setStateRequest = new UnityWebRequest(string.Format("{0}/game/addGameAction", BASE_ADDRESS));
-        SetActionRequest requestData = new SetActionRequest(gameAction, gameData.GameName);
+        SetActionRequest requestData = new SetActionRequest(gameAction, gameData.GameName, enforceIndex);
         string messageBody = JsonUtility.ToJson(requestData);
         Debug.Log("GAME ACTION BODY: " + messageBody);
         setStateRequest.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(messageBody));
