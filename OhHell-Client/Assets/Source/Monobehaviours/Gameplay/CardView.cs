@@ -11,11 +11,11 @@ public class CardView : MonoBehaviour
     public List<Image> SuitSymbols;
     public List<Text> ValueText;
     public Card CardData { get; private set; }
+    public Button AutoPlayButton;
+    public GameObject AutoPlayNotif;
 
     private Button buttonBehavior;
     private Image background;
-    private Button AutoPlayButton;
-    private GameObject AutoPlayNotif;
 
     public void AddButtonBehavior()
     {
