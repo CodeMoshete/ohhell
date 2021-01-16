@@ -12,7 +12,9 @@ public enum EventId
     LocalBidPlaced,
     RemoteBidPlaced,
     OnShowScoresClicked,
-    ShowCardNotification
+    ShowCardNotification,
+    AdvancedCardControlsToggled,
+    AutoPlayCardSelected
 }
 
 public delegate bool EventCallback(object cookie);

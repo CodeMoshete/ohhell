@@ -31,7 +31,8 @@ public class OhHellGameState : IStateController
     private int seenActionIndex;
     private Queue<IGameAction> currentPendingActions;
 
-    private Card CurrentSelectedCard;
+    private Card currentSelectedCard;
+    private Card autoPlayCard;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
@@ -105,6 +106,7 @@ public class OhHellGameState : IStateController
         }
         gameScreen.SyncGameState(gameData, localPlayer);
         Service.EventManager.AddListener(EventId.CardSelected, OnCardSelected);
+        Service.EventManager.AddListener(EventId.AutoPlayCardSelected, OnAutoPlayCardSelected);
         Service.EventManager.AddListener(EventId.PlayCardPressed, OnLocalCardPlayed);
         Debug.Log("Game started!");
     }
@@ -253,24 +255,31 @@ public class OhHellGameState : IStateController
     private bool OnCardSelected(object cookie)
     {
         CardView selectedCard = (CardView)cookie;
-        CurrentSelectedCard = selectedCard.CardData;
+        currentSelectedCard = selectedCard.CardData;
+        return false;
+    }
+
+    private bool OnAutoPlayCardSelected(object cookie)
+    {
+        CardView autoPlayCard = (CardView)cookie;
+        this.autoPlayCard = autoPlayCard.CardData;
         return false;
     }
 
     private bool OnLocalCardPlayed(object cookie)
     {
-        if (CurrentSelectedCard != null && gameData.IsCardValid(CurrentSelectedCard, localPlayer))
+        if (currentSelectedCard != null && gameData.IsCardValid(currentSelectedCard, localPlayer))
         {
             PlayerTurnAction turnAction = new PlayerTurnAction();
-            turnAction.CardPlayed = CurrentSelectedCard;
+            turnAction.CardPlayed = currentSelectedCard;
             turnAction.PlayerIndex = gameData.Players.IndexOf(localPlayer);
             gameScreen.CardPlayed();
             Service.WebRequests.SendGameAction(
                 gameData, turnAction, (response) => {}, seenActionIndex);
-            CurrentSelectedCard = null;
+            currentSelectedCard = null;
             gameScreen.DisableHand();
         }
-        else if (CurrentSelectedCard == null)
+        else if (currentSelectedCard == null)
         {
             string msg = "Select a card to play before clicking the submit button.";
             Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
@@ -305,6 +314,12 @@ public class OhHellGameState : IStateController
             return false;
         }
 
+        if (nextPlayer == localPlayer && autoPlayCard != null)
+        {
+            currentSelectedCard = autoPlayCard;
+            Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
+        }
+        
         gameScreen.SyncGameState(gameData, localPlayer);
         return false;
     }

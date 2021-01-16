@@ -17,7 +17,7 @@ public class GameScreen : MonoBehaviour
     public Transform YourHandContainer;
     public Button ScoreSheetButton;
     public Button PlayCardButton;
-    public Button AutoPlayCard;
+    public Button OptionsButton;
     public GameObject YourTurnNotif;
     public GameObject TurnProcessingNotif;
     public GameObject CardNotificationContainer;
@@ -27,6 +27,7 @@ public class GameScreen : MonoBehaviour
     public HandResultPopup HandResultPopup;
     public RoundResultPopup RoundResultPopup;
     public ScorePopup ScorePopup;
+    public OptionsPopup OptionsPopup;
 
     private List<CardView> playerHand;
     private List<PlayerNameItem> playerList;
@@ -42,6 +43,7 @@ public class GameScreen : MonoBehaviour
 
     private void Start()
     {
+        OptionsButton.onClick.AddListener(ShowOptionsPopup);
         PlayCardButton.onClick.AddListener(PlayCardPressed);
         ScoreSheetButton.onClick.AddListener(() =>
         {
@@ -49,6 +51,7 @@ public class GameScreen : MonoBehaviour
         });
 
         Service.EventManager.AddListener(EventId.ShowCardNotification, OnCardNotification);
+
     }
 
     private bool OnCardNotification(object cookie)
@@ -65,6 +68,11 @@ public class GameScreen : MonoBehaviour
     private void PlayCardPressed()
     {
         Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
+    }
+
+    private void ShowOptionsPopup()
+    {
+        OptionsPopup.ShowPopup();
     }
 
     public void DisableHand()

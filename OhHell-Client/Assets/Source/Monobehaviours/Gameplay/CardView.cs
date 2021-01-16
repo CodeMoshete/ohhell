@@ -14,13 +14,17 @@ public class CardView : MonoBehaviour
 
     private Button buttonBehavior;
     private Image background;
+    private Button AutoPlayButton;
+    private GameObject AutoPlayNotif;
 
     public void AddButtonBehavior()
     {
         background = gameObject.GetComponent<Image>();
         buttonBehavior = gameObject.AddComponent<Button>();
         buttonBehavior.onClick.AddListener(OnCardSelected);
+        AutoPlayButton.onClick.AddListener(OnAutoPlayPressed);
         Service.EventManager.AddListener(EventId.CardSelected, OnCardSelectEvent);
+        Service.EventManager.AddListener(EventId.AutoPlayCardSelected, OnAutoPlaySelectEvent);
     }
 
     private void OnCardSelected()
@@ -28,10 +32,23 @@ public class CardView : MonoBehaviour
         Service.EventManager.SendEvent(EventId.CardSelected, this);
     }
 
+    private void OnAutoPlayPressed()
+    {
+        Service.EventManager.SendEvent(EventId.AutoPlayCardSelected, this);
+    }
+
     private bool OnCardSelectEvent(object cookie)
     {
         CardView selectedCard = (CardView)cookie;
         background.color = selectedCard == this ? SELECT_COLOR : Color.white;
+        return false;
+    }
+
+    private bool OnAutoPlaySelectEvent(object cookie)
+    {
+        CardView autoPlayCard = (CardView)this;
+        bool isAlreadyAutoPlay = AutoPlayNotif.activeSelf;
+        AutoPlayNotif.SetActive(autoPlayCard == this && !isAlreadyAutoPlay);
         return false;
     }
 
