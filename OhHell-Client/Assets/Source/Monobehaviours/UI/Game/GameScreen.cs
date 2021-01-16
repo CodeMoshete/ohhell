@@ -17,6 +17,7 @@ public class GameScreen : MonoBehaviour
     public Transform YourHandContainer;
     public Button ScoreSheetButton;
     public Button PlayCardButton;
+    public Button AutoPlayCard;
     public GameObject YourTurnNotif;
     public GameObject TurnProcessingNotif;
     public GameObject CardNotificationContainer;

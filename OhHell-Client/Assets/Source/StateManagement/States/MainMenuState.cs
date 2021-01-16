@@ -89,6 +89,7 @@ public class MainMenuState : IStateController
                 PlayerData localPlayer = new PlayerData();
                 localPlayer.IsHost = false;
                 localPlayer.PlayerName = localPlayerName;
+                localPlayer.Advanced = mainMenuScreen.AdvancedModeToggle.isOn;
                 game.Players.Add(localPlayer);
             }
 
