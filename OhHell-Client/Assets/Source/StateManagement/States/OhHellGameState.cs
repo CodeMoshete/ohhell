@@ -31,7 +31,9 @@ public class OhHellGameState : IStateController
     private int seenActionIndex;
     private Queue<IGameAction> currentPendingActions;
 
-    private Card CurrentSelectedCard;
+    private Card currentSelectedCard;
+    private Card autoPlayCard;
+    private bool wouldAutoPlayCardWin;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
@@ -103,8 +105,11 @@ public class OhHellGameState : IStateController
         {
             Service.TimerManager.CreateTimer(HOST_GAME_STATE_SYNC_TIME, UpdateServerGameData, null);
         }
-        gameScreen.SyncGameState(gameData, localPlayer);
+
+        bool isFirstCard = gameData.CurrentLeaderIndex == gameData.CurrentPlayerTurnIndex;
+        gameScreen.SyncGameState(gameData, localPlayer, isFirstCard);
         Service.EventManager.AddListener(EventId.CardSelected, OnCardSelected);
+        Service.EventManager.AddListener(EventId.AutoPlayCardSelected, OnAutoPlayCardSelected);
         Service.EventManager.AddListener(EventId.PlayCardPressed, OnLocalCardPlayed);
         Debug.Log("Game started!");
     }
@@ -153,7 +158,8 @@ public class OhHellGameState : IStateController
         {
             gameData = JsonUtility.FromJson<GameData>(response);
             localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
-            gameScreen.SyncGameState(gameData, localPlayer);
+            bool isFirstCard = gameData.CurrentLeaderIndex == gameData.CurrentPlayerTurnIndex;
+            gameScreen.SyncGameState(gameData, localPlayer, isFirstCard);
 
             if (onSynced != null)
             {
@@ -216,7 +222,7 @@ public class OhHellGameState : IStateController
         {
             gameData = JsonUtility.FromJson<GameData>(response);
             localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
-            gameScreen.SyncGameState(gameData, localPlayer);
+            gameScreen.SyncGameState(gameData, localPlayer, true);
             gameScreen.BeginBidding(gameData, localPlayer);
             Action OnDone = (Action)cookie;
             OnDone();
@@ -237,15 +243,23 @@ public class OhHellGameState : IStateController
     {
         PlayerBidAction bidAction = (PlayerBidAction)cookie;
         PlayerData player = gameData.Players[bidAction.PlayerIndex];
-        player.CurrentBid = bidAction.PlayerBid;
-        player.Bids.Add(bidAction.PlayerBid);
-        player.Tricks.Add(0);
-        Debug.Log("Player " + player.PlayerName + " placed a bid of " + player.CurrentBid + ". " + gameData.AllBidsPlaced);
+        if (player.Bids.Count == gameData.CurrentRoundNumber)
+        {
+            player.CurrentBid = bidAction.PlayerBid;
+            player.Bids.Add(bidAction.PlayerBid);
+            player.Tricks.Add(0);
+            Debug.Log("Player " + player.PlayerName + " placed a bid of " + player.CurrentBid + ". " + gameData.AllBidsPlaced);
+        }
+        else
+        {
+            Debug.LogWarning("Player " + player.PlayerName + " tried to bid again: " + bidAction.PlayerBid);
+        }
+
         if (gameData.AllBidsPlaced)
         {
             Debug.Log("All bids placed!");
             gameScreen.EndBidding();
-            gameScreen.SyncGameState(gameData, localPlayer);
+            gameScreen.SyncGameState(gameData, localPlayer, true);
         }
         return true;
     }
@@ -253,24 +267,33 @@ public class OhHellGameState : IStateController
     private bool OnCardSelected(object cookie)
     {
         CardView selectedCard = (CardView)cookie;
-        CurrentSelectedCard = selectedCard.CardData;
+        currentSelectedCard = selectedCard.CardData;
+        return false;
+    }
+
+    private bool OnAutoPlayCardSelected(object cookie)
+    {
+        CardView autoPlayCard = (CardView)cookie;
+        this.autoPlayCard = autoPlayCard.CardData;
+        wouldAutoPlayCardWin = gameData.GetWillCardTakeLead(autoPlayCard.CardData);
         return false;
     }
 
     private bool OnLocalCardPlayed(object cookie)
     {
-        if (CurrentSelectedCard != null && gameData.IsCardValid(CurrentSelectedCard, localPlayer))
+        if (currentSelectedCard != null && gameData.IsCardValid(currentSelectedCard, localPlayer))
         {
             PlayerTurnAction turnAction = new PlayerTurnAction();
-            turnAction.CardPlayed = CurrentSelectedCard;
+            turnAction.CardPlayed = currentSelectedCard;
             turnAction.PlayerIndex = gameData.Players.IndexOf(localPlayer);
             gameScreen.CardPlayed();
             Service.WebRequests.SendGameAction(
                 gameData, turnAction, (response) => {}, seenActionIndex);
-            CurrentSelectedCard = null;
+            currentSelectedCard = null;
+            autoPlayCard = null;
             gameScreen.DisableHand();
         }
-        else if (CurrentSelectedCard == null)
+        else if (currentSelectedCard == null)
         {
             string msg = "Select a card to play before clicking the submit button.";
             Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
@@ -282,7 +305,20 @@ public class OhHellGameState : IStateController
     {
         PlayerTurnAction turn = (PlayerTurnAction)cookie;
         PlayerData turnPlayer = gameData.Players[turn.PlayerIndex];
+        PlayerData lastTurnLeader = gameData.TurnLeader;
         turnPlayer.PlayCardFromHand(turn.CardPlayed);
+
+        if (autoPlayCard != null)
+        {
+            bool newAutoPlayCardState = gameData.GetWillCardTakeLead(autoPlayCard);
+            if (newAutoPlayCardState != wouldAutoPlayCardWin)
+            {
+                string msg = "Your autoplay card has been reset because it would no longer win the hand.";
+                Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
+                autoPlayCard = null;
+                wouldAutoPlayCardWin = false;
+            }
+        }
 
         gameData.IncrementTurnCounter();
         Debug.Log("Processed player turn: " + turnPlayer.PlayerName + ", new index: " + gameData.CurrentPlayerTurnIndex);
@@ -305,7 +341,13 @@ public class OhHellGameState : IStateController
             return false;
         }
 
-        gameScreen.SyncGameState(gameData, localPlayer);
+        gameScreen.SyncGameState(gameData, localPlayer, false, autoPlayCard);
+
+        if (nextPlayer == localPlayer && autoPlayCard != null)
+        {
+            currentSelectedCard = autoPlayCard;
+            Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
+        }
         return false;
     }
 
@@ -334,7 +376,7 @@ public class OhHellGameState : IStateController
             {
                 gameScreen.HideHandresult();
             }
-            gameScreen.SyncGameState(gameData, localPlayer);
+            gameScreen.SyncGameState(gameData, localPlayer, true);
         }, null);
 
         return false;

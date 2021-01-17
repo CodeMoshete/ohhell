@@ -2087,6 +2087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameListPanel: {fileID: 941168727022255135}
   NewGameButton: {fileID: 941168726309189902}
+  AdvancedModeToggle: {fileID: 0}
   JoinGamePopup: {fileID: 3919121388844795824}
   JoinGameInProgressPopup: {fileID: 5371693520722949308}
   CreateGamePopup: {fileID: 279356815292787780}

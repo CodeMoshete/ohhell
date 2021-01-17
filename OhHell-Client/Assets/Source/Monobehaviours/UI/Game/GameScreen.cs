@@ -17,6 +17,7 @@ public class GameScreen : MonoBehaviour
     public Transform YourHandContainer;
     public Button ScoreSheetButton;
     public Button PlayCardButton;
+    public Button OptionsButton;
     public GameObject YourTurnNotif;
     public GameObject TurnProcessingNotif;
     public GameObject CardNotificationContainer;
@@ -26,6 +27,7 @@ public class GameScreen : MonoBehaviour
     public HandResultPopup HandResultPopup;
     public RoundResultPopup RoundResultPopup;
     public ScorePopup ScorePopup;
+    public OptionsPopup OptionsPopup;
 
     private List<CardView> playerHand;
     private List<PlayerNameItem> playerList;
@@ -41,6 +43,7 @@ public class GameScreen : MonoBehaviour
 
     private void Start()
     {
+        OptionsButton.onClick.AddListener(ShowOptionsPopup);
         PlayCardButton.onClick.AddListener(PlayCardPressed);
         ScoreSheetButton.onClick.AddListener(() =>
         {
@@ -66,6 +69,11 @@ public class GameScreen : MonoBehaviour
         Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
     }
 
+    private void ShowOptionsPopup()
+    {
+        OptionsPopup.ShowPopup();
+    }
+
     public void DisableHand()
     {
         for (int i = 0, count = playerHand.Count; i < count; ++i)
@@ -80,16 +88,17 @@ public class GameScreen : MonoBehaviour
         PlayCardButton.gameObject.SetActive(false);
     }
 
-    public void SyncGameState(GameData gameState, PlayerData localPlayer)
+    public void SyncGameState(GameData gameState, PlayerData localPlayer, bool firstTurn = false, Card autoPlayCard = null)
     {
         RoundText.text = string.Format("Round {0}/13", gameState.CurrentRoundNumber + 1);
         RefreshPlayerList(gameState);
         SetHighCard(gameState);
         SetTrumpCard(gameState);
-        SetPlayerHand(localPlayer.CurrentHand);
+        bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
+        bool allowAutoPlay = !(localPlayersTurn || firstTurn) && gameState.IsPlayersTurnStillComing(localPlayer);
+        SetPlayerHand(localPlayer.CurrentHand, allowAutoPlay, autoPlayCard, gameState, localPlayer);
         YourBid.text = localPlayer.CurrentBid.ToString();
         YourTricks.text = localPlayer.CurrentTricks.ToString();
-        bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
         Card ledCard = gameState.Players[gameState.CurrentLeaderIndex].CurrentRoundCard;
 
         LedSuitField.text = 
@@ -102,7 +111,7 @@ public class GameScreen : MonoBehaviour
         TurnProcessingNotif.SetActive(false);
     }
 
-    public void SetPlayerHand(List<Card> hand)
+    public void SetPlayerHand(List<Card> hand, bool allowAutoPlay, Card autoPlayCard, GameData gameState, PlayerData localPlayer)
     {
         for (int i = 0, count = playerHand.Count; i < count; ++i)
         {
@@ -113,7 +122,8 @@ public class GameScreen : MonoBehaviour
         for (int i = 0, count = hand.Count; i < count; ++i)
         {
             Card card = hand[i];
-            playerHand.Add(CardView.CreateFromModel(card, YourHandContainer, true));
+            bool allowAutoPlayCard = allowAutoPlay && gameState.IsCardValid(card, localPlayer, true);
+            playerHand.Add(CardView.CreateFromModel(card, YourHandContainer, true, allowAutoPlayCard, autoPlayCard));
         }
     }
 
