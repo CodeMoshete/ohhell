@@ -204,6 +204,11 @@ public class GameData
         return isValid;
     }
 
+    public Card CompareCardsForRound(Card card1, Card card2)
+    {
+        Card ledCard = Players[CurrentLeaderIndex].CurrentRoundCard;
+    }
+
     public PlayerData TurnLeader
     {
         get

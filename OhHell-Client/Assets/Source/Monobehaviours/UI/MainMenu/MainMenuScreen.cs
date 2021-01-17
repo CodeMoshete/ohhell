@@ -7,7 +7,6 @@ public class MainMenuScreen : MonoBehaviour
 {
     public Transform GameListPanel;
     public Button NewGameButton;
-    public Toggle AdvancedModeToggle;
 
     public JoinGamePopup JoinGamePopup;
     public JoinGameInProgressPopup JoinGameInProgressPopup;
@@ -35,8 +34,6 @@ public class MainMenuScreen : MonoBehaviour
 
         RefreshLobbyContent(lobbyData);
         NewGameButton.onClick.AddListener(OnNewGamePressed);
-        AdvancedModeToggle.onValueChanged.AddListener(OnAdvancedChecked);
-        AdvancedModeToggle.isOn = false;
 
         //GameData gameData = new GameData();
         //gameData.GameName = NewGameNameField.text;
@@ -94,11 +91,6 @@ public class MainMenuScreen : MonoBehaviour
     private void OnGameJoined(string gameName, string playerName)
     {
         onJoinGame(gameName, playerName);
-    }
-
-    private void OnAdvancedChecked(bool toggle)
-    {
-        //AdvancedModeToggle.isOn = toggle;
     }
 
     public void RefreshLobbyContent(LobbyData lobbyData)
