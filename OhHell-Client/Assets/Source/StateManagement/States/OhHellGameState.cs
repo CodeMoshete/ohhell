@@ -104,7 +104,9 @@ public class OhHellGameState : IStateController
         {
             Service.TimerManager.CreateTimer(HOST_GAME_STATE_SYNC_TIME, UpdateServerGameData, null);
         }
-        gameScreen.SyncGameState(gameData, localPlayer);
+
+        bool isFirstCard = gameData.CurrentLeaderIndex == gameData.CurrentPlayerTurnIndex;
+        gameScreen.SyncGameState(gameData, localPlayer, isFirstCard);
         Service.EventManager.AddListener(EventId.CardSelected, OnCardSelected);
         Service.EventManager.AddListener(EventId.AutoPlayCardSelected, OnAutoPlayCardSelected);
         Service.EventManager.AddListener(EventId.PlayCardPressed, OnLocalCardPlayed);
@@ -155,7 +157,8 @@ public class OhHellGameState : IStateController
         {
             gameData = JsonUtility.FromJson<GameData>(response);
             localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
-            gameScreen.SyncGameState(gameData, localPlayer);
+            bool isFirstCard = gameData.CurrentLeaderIndex == gameData.CurrentPlayerTurnIndex;
+            gameScreen.SyncGameState(gameData, localPlayer, isFirstCard);
 
             if (onSynced != null)
             {
@@ -218,7 +221,7 @@ public class OhHellGameState : IStateController
         {
             gameData = JsonUtility.FromJson<GameData>(response);
             localPlayer = gameData.GetPlayerByName(localPlayer.PlayerName);
-            gameScreen.SyncGameState(gameData, localPlayer);
+            gameScreen.SyncGameState(gameData, localPlayer, true);
             gameScreen.BeginBidding(gameData, localPlayer);
             Action OnDone = (Action)cookie;
             OnDone();
@@ -247,7 +250,7 @@ public class OhHellGameState : IStateController
         {
             Debug.Log("All bids placed!");
             gameScreen.EndBidding();
-            gameScreen.SyncGameState(gameData, localPlayer);
+            gameScreen.SyncGameState(gameData, localPlayer, true);
         }
         return true;
     }
@@ -277,6 +280,7 @@ public class OhHellGameState : IStateController
             Service.WebRequests.SendGameAction(
                 gameData, turnAction, (response) => {}, seenActionIndex);
             currentSelectedCard = null;
+            autoPlayCard = null;
             gameScreen.DisableHand();
         }
         else if (currentSelectedCard == null)
@@ -291,7 +295,13 @@ public class OhHellGameState : IStateController
     {
         PlayerTurnAction turn = (PlayerTurnAction)cookie;
         PlayerData turnPlayer = gameData.Players[turn.PlayerIndex];
+        PlayerData lastTurnLeader = gameData.TurnLeader;
         turnPlayer.PlayCardFromHand(turn.CardPlayed);
+
+        if (autoPlayCard != null && lastTurnLeader != gameData.TurnLeader)
+        {
+            autoPlayCard = null;
+        }
 
         gameData.IncrementTurnCounter();
         Debug.Log("Processed player turn: " + turnPlayer.PlayerName + ", new index: " + gameData.CurrentPlayerTurnIndex);
@@ -314,13 +324,13 @@ public class OhHellGameState : IStateController
             return false;
         }
 
+        gameScreen.SyncGameState(gameData, localPlayer, false, autoPlayCard);
+
         if (nextPlayer == localPlayer && autoPlayCard != null)
         {
             currentSelectedCard = autoPlayCard;
             Service.EventManager.SendEvent(EventId.PlayCardPressed, null);
         }
-        
-        gameScreen.SyncGameState(gameData, localPlayer);
         return false;
     }
 
@@ -349,7 +359,7 @@ public class OhHellGameState : IStateController
             {
                 gameScreen.HideHandresult();
             }
-            gameScreen.SyncGameState(gameData, localPlayer);
+            gameScreen.SyncGameState(gameData, localPlayer, true);
         }, null);
 
         return false;

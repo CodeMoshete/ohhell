@@ -51,7 +51,6 @@ public class GameScreen : MonoBehaviour
         });
 
         Service.EventManager.AddListener(EventId.ShowCardNotification, OnCardNotification);
-
     }
 
     private bool OnCardNotification(object cookie)
@@ -89,16 +88,17 @@ public class GameScreen : MonoBehaviour
         PlayCardButton.gameObject.SetActive(false);
     }
 
-    public void SyncGameState(GameData gameState, PlayerData localPlayer)
+    public void SyncGameState(GameData gameState, PlayerData localPlayer, bool firstTurn = false, Card autoPlayCard = null)
     {
         RoundText.text = string.Format("Round {0}/13", gameState.CurrentRoundNumber + 1);
         RefreshPlayerList(gameState);
         SetHighCard(gameState);
         SetTrumpCard(gameState);
-        SetPlayerHand(localPlayer.CurrentHand);
+        bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
+        bool allowAutoPlay = !(localPlayersTurn || firstTurn);
+        SetPlayerHand(localPlayer.CurrentHand, allowAutoPlay, autoPlayCard);
         YourBid.text = localPlayer.CurrentBid.ToString();
         YourTricks.text = localPlayer.CurrentTricks.ToString();
-        bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
         Card ledCard = gameState.Players[gameState.CurrentLeaderIndex].CurrentRoundCard;
 
         LedSuitField.text = 
@@ -111,7 +111,7 @@ public class GameScreen : MonoBehaviour
         TurnProcessingNotif.SetActive(false);
     }
 
-    public void SetPlayerHand(List<Card> hand)
+    public void SetPlayerHand(List<Card> hand, bool allowAutoPlay, Card autoPlayCard)
     {
         for (int i = 0, count = playerHand.Count; i < count; ++i)
         {
@@ -122,7 +122,7 @@ public class GameScreen : MonoBehaviour
         for (int i = 0, count = hand.Count; i < count; ++i)
         {
             Card card = hand[i];
-            playerHand.Add(CardView.CreateFromModel(card, YourHandContainer, true));
+            playerHand.Add(CardView.CreateFromModel(card, YourHandContainer, true, allowAutoPlay, autoPlayCard));
         }
     }
 

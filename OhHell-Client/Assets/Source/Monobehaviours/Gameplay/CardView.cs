@@ -16,9 +16,14 @@ public class CardView : MonoBehaviour
 
     private Button buttonBehavior;
     private Image background;
+    private bool isPlayerCard;
+    private bool allowAutoPlay;
 
-    public void AddButtonBehavior()
+    public void InitializeLocalPlayerCard(bool allowAutoPlay, Card autoPlayCard)
     {
+        isPlayerCard = true;
+        this.allowAutoPlay = allowAutoPlay;
+        AutoPlayNotif.SetActive(autoPlayCard == CardData);
         background = gameObject.GetComponent<Image>();
         buttonBehavior = gameObject.AddComponent<Button>();
         buttonBehavior.onClick.AddListener(OnCardSelected);
@@ -40,15 +45,21 @@ public class CardView : MonoBehaviour
     private bool OnCardSelectEvent(object cookie)
     {
         CardView selectedCard = (CardView)cookie;
-        background.color = selectedCard == this ? SELECT_COLOR : Color.white;
+        bool isSelected = selectedCard == this;
+        if (isPlayerCard && allowAutoPlay && PlayerPrefs.GetInt("advancedCardControls", 0) == 1)
+        {
+            AutoPlayButton.gameObject.SetActive(isSelected);
+        }
+        background.color = isSelected ? SELECT_COLOR : Color.white;
         return false;
     }
 
     private bool OnAutoPlaySelectEvent(object cookie)
     {
-        CardView autoPlayCard = (CardView)this;
+        CardView autoPlayCard = (CardView)cookie;
         bool isAlreadyAutoPlay = AutoPlayNotif.activeSelf;
-        AutoPlayNotif.SetActive(autoPlayCard == this && !isAlreadyAutoPlay);
+        bool isAutoplay = autoPlayCard == this && !isAlreadyAutoPlay;
+        AutoPlayNotif.SetActive(isAutoplay);
         return false;
     }
 
@@ -77,7 +88,7 @@ public class CardView : MonoBehaviour
         buttonBehavior.interactable = enabled;
     }
 
-    public static CardView CreateFromModel(Card card, Transform parent, bool isPlayerCard = false)
+    public static CardView CreateFromModel(Card card, Transform parent, bool isPlayerCard = false, bool allowAutoPlay = false, Card autoPlayCard = null)
     {
         GameObject newCard = GameObject.Instantiate(
             Resources.Load<GameObject>(string.Format("Cards/{0}", card.FaceValue)),
@@ -87,7 +98,7 @@ public class CardView : MonoBehaviour
 
         if (isPlayerCard)
         {
-            newCardView.AddButtonBehavior();
+            newCardView.InitializeLocalPlayerCard(allowAutoPlay, autoPlayCard);
         }
 
         return newCardView;
@@ -96,5 +107,6 @@ public class CardView : MonoBehaviour
     private void OnDestroy()
     {
         Service.EventManager.RemoveListener(EventId.CardSelected, OnCardSelectEvent);
+        Service.EventManager.RemoveListener(EventId.AutoPlayCardSelected, OnAutoPlaySelectEvent);
     }
 }

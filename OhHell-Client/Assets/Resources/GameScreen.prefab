@@ -478,7 +478,7 @@ GameObject:
   - component: {fileID: 1238914982959209293}
   - component: {fileID: 5541210502553770416}
   - component: {fileID: 8311889552882140567}
-  - component: {fileID: 7919211157626820738}
+  - component: {fileID: 5199384295626596768}
   m_Layer: 5
   m_Name: OptionsPopup
   m_TagString: Untagged
@@ -543,7 +543,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7919211157626820738
+--- !u!114 &5199384295626596768
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -552,10 +552,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1361937559561123931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0ea3f840449afe4e975af90da7fa224, type: 3}
+  m_Script: {fileID: 11500000, guid: 7cda08a5ff970474b91bb4a2f1d11f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScoreContainer: {fileID: 0}
+  AdvancedCardControlsToggle: {fileID: 1787886133558122463}
   CloseButton: {fileID: 2380016031251381234}
 --- !u!1 &1507570933573448847
 GameObject:
@@ -5043,7 +5043,7 @@ MonoBehaviour:
   YourHandContainer: {fileID: 4056366931571239184}
   ScoreSheetButton: {fileID: 4056366932168867948}
   PlayCardButton: {fileID: 4056366931891741207}
-  AutoPlayCard: {fileID: 0}
+  OptionsButton: {fileID: 8840154875351194891}
   YourTurnNotif: {fileID: 8709873203389695122}
   TurnProcessingNotif: {fileID: 6263541756332272362}
   CardNotificationContainer: {fileID: 5298367418405459922}
@@ -5052,6 +5052,7 @@ MonoBehaviour:
   HandResultPopup: {fileID: 6979615979393380670}
   RoundResultPopup: {fileID: 3400562052431959201}
   ScorePopup: {fileID: 7233017034217871896}
+  OptionsPopup: {fileID: 5199384295626596768}
 --- !u!1 &4056366932288637759
 GameObject:
   m_ObjectHideFlags: 0
@@ -9146,7 +9147,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &7929291873499731469
 GameObject:
   m_ObjectHideFlags: 0
@@ -9489,7 +9490,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 403.83, y: -64.11}
+  m_AnchoredPosition: {x: 403.83, y: -36.205}
   m_SizeDelta: {x: 127.53235, y: 18.220749}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7917134092384456383
