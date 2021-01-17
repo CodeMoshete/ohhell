@@ -95,8 +95,8 @@ public class GameScreen : MonoBehaviour
         SetHighCard(gameState);
         SetTrumpCard(gameState);
         bool localPlayersTurn = gameState.Players[gameState.CurrentPlayerTurnIndex].PlayerName == localPlayer.PlayerName;
-        bool allowAutoPlay = !(localPlayersTurn || firstTurn);
-        SetPlayerHand(localPlayer.CurrentHand, allowAutoPlay, autoPlayCard);
+        bool allowAutoPlay = !(localPlayersTurn || firstTurn) && gameState.IsPlayersTurnStillComing(localPlayer);
+        SetPlayerHand(localPlayer.CurrentHand, allowAutoPlay, autoPlayCard, gameState, localPlayer);
         YourBid.text = localPlayer.CurrentBid.ToString();
         YourTricks.text = localPlayer.CurrentTricks.ToString();
         Card ledCard = gameState.Players[gameState.CurrentLeaderIndex].CurrentRoundCard;
@@ -111,7 +111,7 @@ public class GameScreen : MonoBehaviour
         TurnProcessingNotif.SetActive(false);
     }
 
-    public void SetPlayerHand(List<Card> hand, bool allowAutoPlay, Card autoPlayCard)
+    public void SetPlayerHand(List<Card> hand, bool allowAutoPlay, Card autoPlayCard, GameData gameState, PlayerData localPlayer)
     {
         for (int i = 0, count = playerHand.Count; i < count; ++i)
         {
@@ -122,7 +122,8 @@ public class GameScreen : MonoBehaviour
         for (int i = 0, count = hand.Count; i < count; ++i)
         {
             Card card = hand[i];
-            playerHand.Add(CardView.CreateFromModel(card, YourHandContainer, true, allowAutoPlay, autoPlayCard));
+            bool allowAutoPlayCard = allowAutoPlay && gameState.IsCardValid(card, localPlayer, true);
+            playerHand.Add(CardView.CreateFromModel(card, YourHandContainer, true, allowAutoPlayCard, autoPlayCard));
         }
     }
 

@@ -12,7 +12,6 @@ public class PlayerData
     public int CurrentTricks;
     public List<int> Bids;
     public List<int> Tricks;
-    public bool Advanced;
     public int TotalScore
     {
         get
@@ -32,7 +31,6 @@ public class PlayerData
         CurrentHand = new List<Card>();
         Bids = new List<int>();
         Tricks = new List<int>();
-        Advanced = false;
     }
 
     public void PlayCardFromHand(Card card)

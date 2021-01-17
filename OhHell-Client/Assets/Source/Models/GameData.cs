@@ -143,7 +143,7 @@ public class GameData
         }
     }
 
-    public bool IsCardValid(Card card, PlayerData localPlayer)
+    public bool IsCardValid(Card card, PlayerData localPlayer, bool suppressMessages = false)
     {
         bool isValid = true;
         PlayerData leadPlayer = Players[CurrentLeaderIndex];
@@ -175,8 +175,11 @@ public class GameData
             if (!isLedSuit && playerHasLedSuit)
             {
                 isValid = false;
-                string msg = "You must follow the suit that was led.";
-                Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
+                if (!suppressMessages)
+                {
+                    string msg = "You must follow the suit that was led.";
+                    Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
+                }
             }
         }
         else
@@ -196,17 +199,84 @@ public class GameData
             if (isTrumpSuit && playerHasNonTrump && isFirstTurn)
             {
                 isValid = false;
-                string msg = "You cannot lead trump on the first turn of a round.";
-                Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
+                if (!suppressMessages)
+                {
+                    string msg = "You cannot lead trump on the first turn of a round.";
+                    Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
+                }
             }
         }
 
         return isValid;
     }
 
-    public Card CompareCardsForRound(Card card1, Card card2)
+    public bool IsPlayersTurnStillComing(PlayerData player)
     {
-        Card ledCard = Players[CurrentLeaderIndex].CurrentRoundCard;
+        return player.CurrentHand.Count == Players[CurrentPlayerTurnIndex].CurrentHand.Count;
+    }
+
+    public bool GetWillCardTakeLead(Card input)
+    {
+        PlayerData turnLeader = TurnLeader;
+        if (turnLeader != null)
+        {
+            Card highCard = turnLeader.CurrentRoundCard;
+            if (highCard != null)
+            {
+                // High card is trump.
+                if (highCard.Suit == CurrentTrumpCard.Suit)
+                {
+                    // High card is ace of trump.
+                    if (highCard.IntValue == 0)
+                    {
+                        return false;
+                    }
+
+                    // Both are trump.
+                    if (input.Suit == CurrentTrumpCard.Suit)
+                    {
+                        // Input is ace of trump.
+                        if (input.IntValue == 0)
+                        {
+                            return true;
+                        }
+
+                        // Compare non-ace trump values.
+                        return input.IntValue > highCard.IntValue;
+                    }
+                }
+                else
+                {
+                    // Input card is trump, but high card is not.
+                    if (input.Suit == CurrentTrumpCard.Suit)
+                    {
+                        return true;
+                    }
+
+                    // Input card is a throwaway.
+                    if (input.Suit != highCard.Suit)
+                    {
+                        return false;
+                    }
+
+                    // High card is an ace.
+                    if (highCard.IntValue == 0)
+                    {
+                        return false;
+                    }
+
+                    // Input card is an ace.
+                    if (input.IntValue == 0)
+                    {
+                        return true;
+                    }
+
+                    // Compare non-ace card values.
+                    return input.IntValue > highCard.IntValue;
+                }
+            }
+        }
+        return false;
     }
 
     public PlayerData TurnLeader

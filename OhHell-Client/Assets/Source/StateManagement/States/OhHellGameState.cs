@@ -33,6 +33,7 @@ public class OhHellGameState : IStateController
 
     private Card currentSelectedCard;
     private Card autoPlayCard;
+    private bool wouldAutoPlayCardWin;
 
     public void Load(Action onLoadedCallback, object passedParams)
     {
@@ -242,7 +243,7 @@ public class OhHellGameState : IStateController
     {
         PlayerBidAction bidAction = (PlayerBidAction)cookie;
         PlayerData player = gameData.Players[bidAction.PlayerIndex];
-        if (player.Bids.Count < gameData.CurrentRoundNumber)
+        if (player.Bids.Count == gameData.CurrentRoundNumber)
         {
             player.CurrentBid = bidAction.PlayerBid;
             player.Bids.Add(bidAction.PlayerBid);
@@ -274,6 +275,7 @@ public class OhHellGameState : IStateController
     {
         CardView autoPlayCard = (CardView)cookie;
         this.autoPlayCard = autoPlayCard.CardData;
+        wouldAutoPlayCardWin = gameData.GetWillCardTakeLead(autoPlayCard.CardData);
         return false;
     }
 
@@ -306,9 +308,16 @@ public class OhHellGameState : IStateController
         PlayerData lastTurnLeader = gameData.TurnLeader;
         turnPlayer.PlayCardFromHand(turn.CardPlayed);
 
-        if (autoPlayCard != null && lastTurnLeader != gameData.TurnLeader)
+        if (autoPlayCard != null)
         {
-            autoPlayCard = null;
+            bool newAutoPlayCardState = gameData.GetWillCardTakeLead(autoPlayCard);
+            if (newAutoPlayCardState != wouldAutoPlayCardWin)
+            {
+                string msg = "Your autoplay card has been reset because it would no longer win the hand.";
+                Service.EventManager.SendEvent(EventId.ShowCardNotification, msg);
+                autoPlayCard = null;
+                wouldAutoPlayCardWin = false;
+            }
         }
 
         gameData.IncrementTurnCounter();
