@@ -80,7 +80,7 @@ public class GameData
             {
                 if (Players[i].CurrentBid < 0)
                 {
-                    Debug.Log("Player " + Players[i].PlayerName + " has not placed a bid yet!");
+                    Debug.Log("Player " + Players[i].PlayerName + " (ID " + i + ") has not placed a bid yet!");
                     return false;
                 }
             }

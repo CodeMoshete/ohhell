@@ -242,10 +242,18 @@ public class OhHellGameState : IStateController
     {
         PlayerBidAction bidAction = (PlayerBidAction)cookie;
         PlayerData player = gameData.Players[bidAction.PlayerIndex];
-        player.CurrentBid = bidAction.PlayerBid;
-        player.Bids.Add(bidAction.PlayerBid);
-        player.Tricks.Add(0);
-        Debug.Log("Player " + player.PlayerName + " placed a bid of " + player.CurrentBid + ". " + gameData.AllBidsPlaced);
+        if (player.Bids.Count < gameData.CurrentRoundNumber)
+        {
+            player.CurrentBid = bidAction.PlayerBid;
+            player.Bids.Add(bidAction.PlayerBid);
+            player.Tricks.Add(0);
+            Debug.Log("Player " + player.PlayerName + " placed a bid of " + player.CurrentBid + ". " + gameData.AllBidsPlaced);
+        }
+        else
+        {
+            Debug.LogWarning("Player " + player.PlayerName + " tried to bid again: " + bidAction.PlayerBid);
+        }
+
         if (gameData.AllBidsPlaced)
         {
             Debug.Log("All bids placed!");
