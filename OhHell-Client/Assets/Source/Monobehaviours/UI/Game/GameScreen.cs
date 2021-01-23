@@ -22,6 +22,7 @@ public class GameScreen : MonoBehaviour
     public GameObject TurnProcessingNotif;
     public GameObject CardNotificationContainer;
     public Text CardNotificationText;
+    public AudioSource TurnAudioObject;
 
     public BidPlacerPopup BidPopup;
     public HandResultPopup HandResultPopup;
@@ -31,9 +32,9 @@ public class GameScreen : MonoBehaviour
 
     private List<CardView> playerHand;
     private List<PlayerNameItem> playerList;
-    private CardView HighCard;
-    private CardView LastCard;
-    private CardView TrumpCard;
+    private CardView highCard;
+    private CardView lastCard;
+    private CardView trumpCard;
 
     public GameScreen()
     {
@@ -108,6 +109,10 @@ public class GameScreen : MonoBehaviour
 
         PlayCardButton.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
         YourTurnNotif.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
+
+        TurnAudioObject.volume = 0.025f;
+        TurnAudioObject.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
+
         TurnProcessingNotif.SetActive(false);
     }
 
@@ -129,43 +134,43 @@ public class GameScreen : MonoBehaviour
 
     public void SetHighCard(GameData gameState)
     {
-        if (HighCard != null)
+        if (highCard != null)
         {
-            GameObject.Destroy(HighCard.gameObject);
-            HighCard = null;
+            GameObject.Destroy(highCard.gameObject);
+            highCard = null;
             HighCardPlayerName.text = string.Empty;
         }
 
         PlayerData turnLeader = gameState.TurnLeader;
         if (turnLeader != null)
         { 
-            HighCard = CardView.CreateFromModel(turnLeader.CurrentRoundCard, HighCardContainer);
+            highCard = CardView.CreateFromModel(turnLeader.CurrentRoundCard, HighCardContainer);
             HighCardPlayerName.text = turnLeader.PlayerName;
         }
 
-        if (LastCard != null)
+        if (lastCard != null)
         {
-            GameObject.Destroy(LastCard.gameObject);
-            LastCard = null;
+            GameObject.Destroy(lastCard.gameObject);
+            lastCard = null;
         }
 
         PlayerData lastPlayer = gameState.LastPlayer;
         if (lastPlayer != null)
         {
-            LastCard = CardView.CreateFromModel(lastPlayer.CurrentRoundCard, LastPlayedCardContainer);
+            lastCard = CardView.CreateFromModel(lastPlayer.CurrentRoundCard, LastPlayedCardContainer);
         }
     }
 
     private void SetTrumpCard(GameData gameState)
     {
-        if (TrumpCard != null)
+        if (trumpCard != null)
         {
-            GameObject.Destroy(TrumpCard.gameObject);
-            TrumpCard = null;
+            GameObject.Destroy(trumpCard.gameObject);
+            trumpCard = null;
         }
 
         Debug.Log("Trump card set to " + gameState.CurrentTrumpCard.ToString());
-        TrumpCard = CardView.CreateFromModel(gameState.CurrentTrumpCard, TrumpCardContainer);
+        trumpCard = CardView.CreateFromModel(gameState.CurrentTrumpCard, TrumpCardContainer);
     }
 
     private void RefreshPlayerList(GameData gameState)
