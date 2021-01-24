@@ -8,6 +8,7 @@ public class MainMenuScreen : MonoBehaviour
     public Transform GameListPanel;
     public Button NewGameButton;
 
+    public JoinNewGameSplitPopup JoinGameSplitPopup;
     public JoinGamePopup JoinGamePopup;
     public JoinGameInProgressPopup JoinGameInProgressPopup;
     public CreateGamePopup CreateGamePopup;
@@ -71,21 +72,34 @@ public class MainMenuScreen : MonoBehaviour
     {
         if (gameData.isLaunched)
         {
-            Service.WebRequests.GetGameState(gameData.gameName, (response) =>
-            {
-                GameData fullGameData = JsonUtility.FromJson<GameData>(response);
-                JoinGameInProgressPopup.ShowPopup(fullGameData, OnInProgressGameJoined);
-            });
+            ShowJoinExistingPopup(gameData);
         }
         else
-        { 
-            JoinGamePopup.ShowPopup(gameData.gameName);
+        {
+            JoinGameSplitPopup.ShowPopup(
+                gameData, JoinGamePopup.ShowPopup, ShowJoinExistingPopup);
         }
     }
 
-    private void OnInProgressGameJoined(GameData data, string playerName)
+    private void ShowJoinExistingPopup(GameDataSimple gameData, bool joinLobby = false)
     {
-        onJoinGameInProgress(data, playerName);
+        Service.WebRequests.GetGameState(gameData.gameName, (response) =>
+        {
+            GameData fullGameData = JsonUtility.FromJson<GameData>(response);
+            JoinGameInProgressPopup.ShowPopup(fullGameData, OnInProgressGameJoined, joinLobby);
+        });
+    }
+
+    private void OnInProgressGameJoined(GameData data, string playerName, bool joinLobby)
+    {
+        if (joinLobby)
+        {
+            OnGameJoined(data.GameName, playerName);
+        }
+        else
+        {
+            onJoinGameInProgress(data, playerName);
+        }
     }
 
     private void OnGameJoined(string gameName, string playerName)

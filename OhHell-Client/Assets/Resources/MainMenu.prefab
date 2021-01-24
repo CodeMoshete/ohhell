@@ -2088,6 +2088,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameListPanel: {fileID: 941168727022255135}
   NewGameButton: {fileID: 941168726309189902}
+  JoinGameSplitPopup: {fileID: 8647556439399989086}
   JoinGamePopup: {fileID: 3919121388844795824}
   JoinGameInProgressPopup: {fileID: 5371693520722949308}
   CreateGamePopup: {fileID: 279356815292787780}
@@ -5912,14 +5913,14 @@ GameObject:
   - component: {fileID: 4091074545777868399}
   - component: {fileID: 6367539697595247514}
   - component: {fileID: 4883558531181880461}
-  - component: {fileID: 740377823309034332}
+  - component: {fileID: 8647556439399989086}
   m_Layer: 5
   m_Name: JoinNewGameSplit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4091074545777868399
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5977,7 +5978,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &740377823309034332
+--- !u!114 &8647556439399989086
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5986,16 +5987,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3020083305801140726}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bc5b024c37fcda4996e60be1db00cfe, type: 3}
+  m_Script: {fileID: 11500000, guid: 05fb2417c4c95da49802dbfda3245c48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerNameField: {fileID: 0}
-  JoinButton: {fileID: 8632206432152160812}
-  CancelButton: {fileID: 2058887065732241619}
-  NameKeyboardButton: {fileID: 0}
-  KeyboardPositioner: {fileID: 0}
-  UIContainer: {fileID: 3956643770727212185}
-  Keyboard: {fileID: 8058960954225186056}
+  JoinAsNewButton: {fileID: 8632206432152160812}
+  JoinTeamButton: {fileID: 2058887065732241619}
+  CancelButton: {fileID: 5037930912873693980}
 --- !u!1 &3039024933393101468
 GameObject:
   m_ObjectHideFlags: 0

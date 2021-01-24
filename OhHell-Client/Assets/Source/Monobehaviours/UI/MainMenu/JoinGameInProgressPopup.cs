@@ -10,8 +10,9 @@ public class JoinGameInProgressPopup : MonoBehaviour
     public GameObject PlayerNameEntryPrefab;
 
     private GameData game;
-    private Action<GameData, string> onJoinGame;
+    private Action<GameData, string, bool> onJoinGame;
     private List<GameObject> playerNameItems;
+    private bool joinLobby;
 
     public JoinGameInProgressPopup()
     {
@@ -23,8 +24,9 @@ public class JoinGameInProgressPopup : MonoBehaviour
         CancelButton.onClick.AddListener(OnCancel);
     }
 
-    public void ShowPopup(GameData gameData, Action<GameData, string> onJoinGame)
+    public void ShowPopup(GameData gameData, Action<GameData, string, bool> onJoinGame, bool joinLobby)
     {
+        this.joinLobby = joinLobby;
         for (int i = 0, count = playerNameItems.Count; i < count; ++i)
         {
             GameObject.Destroy(playerNameItems[i]);
@@ -48,7 +50,7 @@ public class JoinGameInProgressPopup : MonoBehaviour
     
     private void OnJoinAsPlayer(string playerName)
     {
-        onJoinGame(game, playerName);
+        onJoinGame(game, playerName, joinLobby);
     }
 
     private void OnCancel()
