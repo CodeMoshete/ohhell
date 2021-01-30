@@ -109,12 +109,12 @@ public class GameScreen : MonoBehaviour
 
         if (!PlayerPrefs.HasKey("disableTurnNotif"))
         {
-            PlayCardButton.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
-            YourTurnNotif.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
+            TurnAudioObject.volume = 0.025f;
+            TurnAudioObject.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
         }
 
-        TurnAudioObject.volume = 0.025f;
-        TurnAudioObject.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
+        YourTurnNotif.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
+        PlayCardButton.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
 
         TurnProcessingNotif.SetActive(false);
     }
