@@ -1,4 +1,5 @@
-﻿public static class Service
+﻿
+public static class Service
 {
     private static EventManager eventManager;
     public static EventManager EventManager
@@ -47,6 +48,14 @@
         get
         {
             return UpdateManager.Instance;
+        }
+    }
+
+    public static LocalPreferences LocalPreferences
+    {
+        get
+        {
+            return LocalPreferences.Instance;
         }
     }
 }

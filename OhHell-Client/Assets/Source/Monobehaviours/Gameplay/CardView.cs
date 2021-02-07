@@ -46,7 +46,7 @@ public class CardView : MonoBehaviour
     {
         CardView selectedCard = (CardView)cookie;
         bool isSelected = selectedCard == this;
-        if (isPlayerCard && allowAutoPlay && PlayerPrefs.GetInt("advancedCardControls", 0) == 1)
+        if (isPlayerCard && allowAutoPlay && Service.LocalPreferences.EnableAdvancedCardControls)
         {
             AutoPlayButton.gameObject.SetActive(isSelected);
         }

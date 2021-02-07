@@ -28,20 +28,13 @@ public class OptionsPopup : MonoBehaviour
     {
         Debug.Log("Advanced card controls: " + isToggled);
         Service.EventManager.SendEvent(EventId.AdvancedCardControlsToggled, isToggled);
-        PlayerPrefs.SetInt("advancedCardControls", isToggled ? 1 : 0);
+        Service.LocalPreferences.EnableAdvancedCardControls = isToggled;
     }
 
     private void ToggleAudioNotifications(bool isToggled)
     {
         Debug.Log("Advanced card controls: " + isToggled);
-        if (!PlayerPrefs.HasKey("disableTurnNotif"))
-        {
-            PlayerPrefs.SetInt("disableTurnNotif", isToggled ? 1 : 0);
-        }
-        else
-        {
-            PlayerPrefs.DeleteKey("disableTurnNotif");
-        }
+        Service.LocalPreferences.DisableTurnNotification = !isToggled;
         Service.EventManager.SendEvent(EventId.AdvancedCardControlsToggled, isToggled);
     }
 }

@@ -107,7 +107,7 @@ public class GameScreen : MonoBehaviour
             string.Format("Led Suit: {0}", ledCard.Suit.ToString()) : 
             string.Empty;
 
-        if (!PlayerPrefs.HasKey("disableTurnNotif"))
+        if (!Service.LocalPreferences.DisableTurnNotification)
         {
             TurnAudioObject.volume = 0.025f;
             TurnAudioObject.gameObject.SetActive(localPlayersTurn && gameState.IsLaunched);
