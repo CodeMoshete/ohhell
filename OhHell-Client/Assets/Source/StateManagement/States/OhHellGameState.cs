@@ -308,7 +308,7 @@ public class OhHellGameState : IStateController
         PlayerData lastTurnLeader = gameData.TurnLeader;
         turnPlayer.PlayCardFromHand(turn.CardPlayed);
 
-        if (autoPlayCard != null)
+        if (autoPlayCard != null && turnPlayer != localPlayer)
         {
             bool newAutoPlayCardState = gameData.GetWillCardTakeLead(autoPlayCard);
             if (newAutoPlayCardState != wouldAutoPlayCardWin)
