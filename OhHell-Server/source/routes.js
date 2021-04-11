@@ -2,6 +2,7 @@ const debug = require('debug')('ohhell-server');
 const express = require('express');
 const util = require('util');
 const gameManager = require('./gameManager.js');
+const adminTools = require('./adminTools.js');
 
 const router = express.Router();
 
@@ -61,6 +62,16 @@ router.route('/deleteGame')
   .post(async (req, res) => {
     debug(`Deleting game!\n${util.inspect(req.body)}`);
     gameManager.deleteGame(req.body.gameName);
+    res.sendStatus(200);
+  });
+
+router.route('/adjustPlayerBid')
+  .get(async (req, res) => {
+    const playerId = req.query.id;
+    const bidNum = req.query.bid;
+    const handNum = req.query.hand;
+    const gameName = req.query.game;
+    await adminTools.adjustPlayerBid(gameName, playerId, handNum, bidNum);
     res.sendStatus(200);
   });
 
