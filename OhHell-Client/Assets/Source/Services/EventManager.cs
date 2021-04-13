@@ -14,7 +14,8 @@ public enum EventId
     OnShowScoresClicked,
     ShowCardNotification,
     AdvancedCardControlsToggled,
-    AutoPlayCardSelected
+    AutoPlayCardSelected,
+    BidAdjusted
 }
 
 public delegate bool EventCallback(object cookie);

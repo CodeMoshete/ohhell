@@ -50,6 +50,7 @@ public class OhHellGameState : IStateController
         Service.EventManager.AddListener(EventId.LocalBidPlaced, OnLocalBidPlaced);
         Service.EventManager.AddListener(EventId.RemoteBidPlaced, OnRemoteBidPlaced);
         Service.EventManager.AddListener(EventId.OnShowScoresClicked, ShowScores);
+        Service.EventManager.AddListener(EventId.BidAdjusted, AdjustBid);
 
         Transform gameUiLayer = GameObject.Find("GameUILayer").transform;
         gameUi = GameObject.Instantiate(
@@ -149,6 +150,18 @@ public class OhHellGameState : IStateController
     private bool ShowScores(object cookie)
     {
         gameScreen.ShowScoreSheet(gameData);
+        return true;
+    }
+
+    private bool AdjustBid(object cookie)
+    {
+        AdjustBidAction actionData = (AdjustBidAction)cookie;
+        gameData.Players[actionData.PlayerId].Bids[actionData.HandNum] = actionData.BidNum;
+        if (actionData.HandNum == gameData.CurrentRoundNumber)
+        {
+            gameData.Players[actionData.PlayerId].CurrentBid = actionData.BidNum;
+        }
+        gameScreen.SyncGameState(gameData, localPlayer);
         return true;
     }
 
